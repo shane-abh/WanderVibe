@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.10.35122.118
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WanderVibe", "WanderVibe.csproj", "{AB47CCAC-295E-438D-A634-7413FC5D59E7}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{AB47CCAC-295E-438D-A634-7413FC5D59E7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AB47CCAC-295E-438D-A634-7413FC5D59E7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AB47CCAC-295E-438D-A634-7413FC5D59E7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AB47CCAC-295E-438D-A634-7413FC5D59E7}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {195F9D33-42CF-44C6-8F1E-7724CBCB38DD}
+	EndGlobalSection
+EndGlobal
