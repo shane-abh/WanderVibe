@@ -23,7 +23,7 @@
         <form asp-action="Create" method="post" class="row g-3 needs-validation" novalidate>
             <div class="col-md-12">
                 <div class="form-floating mb-3">
-                    <input asp-for="PackageName" class="form-control" id="floatingPackageName" placeholder="Package Name" required>
+                    <input asp-for="PackageName" class="form-control" id="floatingPackageName" placeholder="Package Name" spellcheck="true" required>
                     <label for="floatingPackageName">Package Name</label>
                     <div class="invalid-feedback">Please provide a package name.</div>
                     <span asp-validation-for="PackageName" class="text-danger"></span>
@@ -31,14 +31,14 @@
             </div>
             <div class="col-md-12">
                 <div class="form-floating mb-3">
-                    <textarea asp-for="Description" class="form-control" id="floatingDescription" placeholder="Description" style="height: 100px;" required></textarea>
+                    <textarea asp-for="Description" class="form-control" id="floatingDescription" placeholder="Description" style="height: 100px;" spellcheck="true" required></textarea>
                     <label for="floatingDescription">Description</label>
                     <div class="invalid-feedback">Please provide a description.</div>
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="form-floating mb-3">
-                    <input asp-for="DestinationFrom" class="form-control" id="floatingDestinationFrom" placeholder="Destination From" required>
+                    <input asp-for="DestinationFrom" class="form-control" id="floatingDestinationFrom" placeholder="Destination From" spellcheck="true" required>
                     <label for="floatingDestinationFrom">Destination From</label>
                     <div class="invalid-feedback">Please provide a starting destination.</div>
                     <span asp-validation-for="DestinationFrom" class="text-danger"></span>
@@ -46,7 +46,7 @@
             </div>
             <div class="col-md-6">
                 <div class="form-floating mb-3">
-                    <input asp-for="DestinationTo" class="form-control" id="floatingDestinationTo" placeholder="Destination To" required>
+                    <input asp-for="DestinationTo" class="form-control" id="floatingDestinationTo" placeholder="Destination To" spellcheck="true" required>
                     <label for="floatingDestinationTo">Destination To</label>
                     <div class="invalid-feedback">Please provide a destination.</div>
                     <span asp-validation-for="DestinationTo" class="text-danger"></span>
@@ -54,7 +54,7 @@
             </div>
             <div class="col-md-6">
                 <div class="form-floating mb-3">
-                    <input asp-for="StartDate" class="form-control" id="floatingStartDate" type="datetime-local" placeholder="Start Date" required>
+                    <input asp-for="StartDate" class="form-control" id="floatingStartDate" type="datetime-local" placeholder="Start Date" spellcheck="true" required>
                     <label for="floatingStartDate">Start Date</label>
                     <div class="invalid-feedback">Please provide a start date.</div>
                     <span asp-validation-for="StartDate" class="text-danger"></span>
@@ -62,21 +62,21 @@
             </div>
             <div class="col-md-6">
                 <div class="form-floating mb-3">
-                    <input asp-for="EndDate" class="form-control" id="floatingEndDate" type="datetime-local" placeholder="End Date" required>
+                    <input asp-for="EndDate" class="form-control" id="floatingEndDate" type="datetime-local" placeholder="End Date" spellcheck="true" required>
                     <label for="floatingEndDate">End Date</label>
                     <div class="invalid-feedback">Please provide an end date.</div>
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="form-floating mb-3">
-                    <input asp-for="Price" class="form-control" id="floatingPrice" type="number" step="0.01" placeholder="Price" required>
+                    <input asp-for="Price" class="form-control" id="floatingPrice" type="number" step="0.01" placeholder="Price" spellcheck="true" required>
                     <label for="floatingPrice">Price</label>
                     <div class="invalid-feedback">Please provide a price.</div>
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="form-floating mb-3">
-                    <input asp-for="Availability" class="form-control" id="floatingAvailability" type="number" placeholder="Availability">
+                    <input asp-for="Availability" class="form-control" id="floatingAvailability" type="number" placeholder="Availability" spellcheck="true" required>
                     <label for="floatingAvailability">Availability</label>
                     <div class="invalid-feedback">Please provide the availability.</div>
                 </div>
