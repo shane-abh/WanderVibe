@@ -1,36 +1,34 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Identity;
+using System.ComponentModel.DataAnnotations;
 
 namespace WanderVibe.Models
 {
-    public class User
+    public class User : IdentityUser
     {
-        [Key]
-        public int UserId { get; set; }
 
         [Required]
         [StringLength(100)]
-        public string? Username { get; set; }
-
-        [Required]
-        [EmailAddress]
-        public string? Email { get; set; }
-
-        [Required]
-        [StringLength(100, MinimumLength = 6)]
-        public string? Password { get; set; }
+        public string FirstName { get; set; } = "";
 
         [Required]
         [StringLength(100)]
-        public string? FullName { get; set; }
+        public string LastName { get; set; } = "";
 
-        [Phone]
-        public string? PhoneNumber { get; set; }
+        [Required]
+        [DataType(DataType.Date)]
+        public DateTime DateOfBirth { get; set; }
 
-        [StringLength(200)]
-        public string? Address { get; set; }
+        [Required]
+        [EnumDataType(typeof(Gender))]
+        public Gender Gender { get; set; }
 
-        public int UserRole { get; set; }
+        public ICollection<Booking>? Bookings { get; set; }
+    }
 
-        public ICollection<Booking> Bookings { get; set; }
+    public enum Gender
+    {
+        Male,
+        Female,
+        Other
     }
 }

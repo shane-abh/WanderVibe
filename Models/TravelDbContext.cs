@@ -1,15 +1,16 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 
 namespace WanderVibe.Models
 {
-    public class TravelDbContext : DbContext
+    public class TravelDbContext : IdentityDbContext<User>
     {
         public TravelDbContext(DbContextOptions<TravelDbContext> options)
             : base(options)
         {
         }
 
-        public DbSet<User> Users { get; set; }
         public DbSet<TravelPackage> TravelPackages { get; set; }
         public DbSet<Booking> Bookings { get; set; }
         public DbSet<Flight> Flights { get; set; }
@@ -17,6 +18,16 @@ namespace WanderVibe.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
+
+            var admin = new IdentityRole("admin");
+            admin.NormalizedName = "admin";
+
+            var user = new IdentityRole("user");
+            user.NormalizedName = "user";
+
+            modelBuilder.Entity<IdentityRole>().HasData(admin, user);
+
             modelBuilder.Entity<User>()
                 .HasMany(u => u.Bookings)
                 .WithOne(b => b.User)
@@ -37,5 +48,6 @@ namespace WanderVibe.Models
                 .WithOne(b => b.Hotel)
                 .HasForeignKey(b => b.HotelId);
         }
+
     }
 }
