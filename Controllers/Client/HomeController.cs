@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using WanderVibe.Models;
 
-namespace WanderVibe.Controllers
+namespace WanderVibe.Controllers.Client
 {
     public class HomeController : Controller
     {
