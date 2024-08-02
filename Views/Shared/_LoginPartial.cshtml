@@ -1,0 +1,41 @@
+﻿ @using Microsoft.AspNetCore.Identity
+@using WanderVibe.Models
+
+@inject SignInManager<User> SignInManager
+@inject UserManager<User> UserManager
+
+<ul class="navbar-nav">
+    @if (SignInManager.IsSignedIn(User))
+    {
+        var user = await UserManager.GetUserAsync(User);
+        var firstName = user?.FirstName;
+        var lastName = user?.LastName;
+
+        /*if(User.IsInRole("admin"))*/
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle text-dark" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Hello @firstName @lastName!
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                <li>
+                    <a class="dropdown-item" asp-area="Identity" asp-page="/Account/Manage/Index">Manage Account</a>
+                </li>
+                <li><hr class="dropdown-divider" ></li>
+                <li>
+                    <form id="logoutForm" class="dropdown-item" asp-area="Identity" asp-page="/Account/Logout">
+                        <button type="submit" class="btn text-dark p-0 border-0">Logout</button>
+                    </form>
+                </li>
+            </ul>
+        </li>
+    }
+    else
+    {
+        <li class="nav-item">
+            <a class="nav-link text-dark" id="register" asp-area="Identity" asp-page="/Account/Register">Register</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-dark" id="login" asp-area="Identity" asp-page="/Account/Login">Login</a>
+        </li>
+    }
+</ul>

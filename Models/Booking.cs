@@ -12,7 +12,10 @@ namespace WanderVibe.Models
         public int PackageId { get; set; }
 
         [Required]
-        public int UserId { get; set; }
+        public string UserId { get; set; }
+        [ForeignKey("UserId")]
+        public User? User { get; set; }
+
 
         public int? FlightId { get; set; }
 
@@ -30,9 +33,8 @@ namespace WanderVibe.Models
 
         public int? HotelId { get; set; }
 
-        public TravelPackage TravelPackage { get; set; }
-        public User User { get; set; }
-        public Flight Flight { get; set; }
-        public Hotel Hotel { get; set; }
+        public TravelPackage? TravelPackage { get; set; }
+        public Flight? Flight { get; set; }
+        public Hotel? Hotel { get; set; }
     }
 }

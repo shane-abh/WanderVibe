@@ -34,6 +34,6 @@ namespace WanderVibe.Models
         [Range(0, int.MaxValue)]
         public int Availability { get; set; }
 
-        public ICollection<Booking> Bookings { get; set; }
+        public ICollection<Booking>? Bookings { get; set; }
     }
 }
