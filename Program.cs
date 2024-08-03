@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using WanderVibe.Models;
 using Microsoft.AspNetCore.Identity;
+using WanderVibe;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -37,18 +38,11 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
+app.UseMiddleware<LowercaseUrlMiddleware>();
+
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
-
-app.MapControllerRoute(
-    name: "admin",
-    pattern: "admin/{action=Dashboard}/{id?}",
-    defaults: new { controller = "Admin", action = "Dashboard" });
-
-app.MapControllerRoute(
-    name: "admin",
-    pattern: "admin/{controller=Package}/{action=Index}/{id?}");
 
 app.MapRazorPages();
 
