@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using WanderVibe.Models;
 
 namespace WanderVibe.Controllers.Admin
 {
     [Route("admin/[controller]")]
+    [Authorize(Roles = "admin")]
     public class PackageController : Controller
     {
         private readonly TravelDbContext _context;
