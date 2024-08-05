@@ -23,6 +23,16 @@ namespace WanderVibe.Models
         [Range(0, int.MaxValue)]
         public int Availability { get; set; }
 
+        [Required]
+        [StringLength(17)]
+        [Phone]
+        public string? Contact { get; set; }
+
+        [Required]
+        [StringLength(200)]
+        [EmailAddress]
+        public string? Email { get; set; }
+
         public ICollection<Booking>? Bookings { get; set; }
     }
 }

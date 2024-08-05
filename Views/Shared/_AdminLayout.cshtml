@@ -102,7 +102,25 @@
                     <i class="bi bi-grid"></i>
                     <span>Dashboard</span>
                 </a>
-            </li><!-- End Dashboard Nav -->
+            </li><!-- End Dashboard Nav -->           
+
+            <li class="nav-item">
+                <a class="nav-link collapsed" data-bs-target="#user-nav" data-bs-toggle="collapse" href="#">
+                    <i class="bi bi-people"></i><span>Users</span><i class="bi bi-chevron-down ms-auto"></i>
+                </a>
+                <ul id="user-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                    <li>
+                        <a href="/admin/user/clients">
+                            <i class="bi bi-circle"></i><span>View Clients</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/admin/user/admins">
+                            <i class="bi bi-circle"></i><span>View Admins</span>
+                        </a>
+                    </li>
+                </ul>
+            </li><!-- End Users Nav -->
 
             <li class="nav-item">
                 <a class="nav-link collapsed" data-bs-target="#components-nav" data-bs-toggle="collapse" href="#">
@@ -120,7 +138,43 @@
                         </a>
                     </li>                     
                 </ul>
-            </li><!-- End Package Nav -->                      
+            </li><!-- End Package Nav -->                              
+
+            <li class="nav-item">
+                <a class="nav-link collapsed" data-bs-target="#hotel-nav" data-bs-toggle="collapse" href="#">
+                    <i class="bi bi-building"></i><span>Hotel</span><i class="bi bi-chevron-down ms-auto"></i>
+                </a>
+                <ul id="hotel-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                    <li>
+                        <a href="/admin/hotel">
+                            <i class="bi bi-circle"></i><span>View</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/admin/hotel/create">
+                            <i class="bi bi-circle"></i><span>Create</span>
+                        </a>
+                    </li>
+                </ul>
+            </li><!-- End Hotel Nav -->
+
+            <li class="nav-item">
+                <a class="nav-link collapsed" data-bs-target="#flight-nav" data-bs-toggle="collapse" href="#">
+                    <i class="bi bi-airplane"></i><span>Flight</span><i class="bi bi-chevron-down ms-auto"></i>
+                </a>
+                <ul id="flight-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                    <li>
+                        <a href="/admin/flight">
+                            <i class="bi bi-circle"></i><span>View</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/admin/flight/create">
+                            <i class="bi bi-circle"></i><span>Create</span>
+                        </a>
+                    </li>
+                </ul>
+            </li><!-- End Flight Nav -->
         </ul>
 
     </aside><!-- End Sidebar-->

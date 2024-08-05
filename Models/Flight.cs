@@ -10,15 +10,15 @@ namespace WanderVibe.Models
 
         [Required]
         [StringLength(100)]
-        public string? FlightNumber { get; set; }
+        public string FlightNumber { get; set; } = string.Empty;
 
         [Required]
         [StringLength(100)]
-        public string? DepartureCity { get; set; }
+        public string DepartureCity { get; set; } = string.Empty;
 
         [Required]
         [StringLength(100)]
-        public string? ArrivalCity { get; set; }
+        public string ArrivalCity { get; set; } = string.Empty;
 
         [Required]
         public DateTime DepartureDate { get; set; }
