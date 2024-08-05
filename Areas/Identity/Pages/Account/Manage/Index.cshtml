@@ -5,66 +5,86 @@
     ViewData["ActivePage"] = ManageNavPages.Index;
 }
 
-<h3>@ViewData["Title"]</h3>
 <partial name="_StatusMessage" for="StatusMessage" />
 
-<div class="row">
-    <div class="col-md-6">
-        <form method="post">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+<section class="section profile d-flex flex-column align-items-center justify-content-center py-2">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-12 d-flex flex-column align-items-center justify-content-center">
+                <div class="mb-3">
+                    <div class="card-body">                     
+                        <div class="pt-4 pb-2">
+                            <h5 class="card-title text-center pb-0 fs-4">Profile</h5>
+                            <p class="text-center small">Update your personal details</p>
+                        </div>
+                        <form method="post" class="row g-3 needs-validation" novalidate>
+                            <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
 
-            <div class="form-group">
-                <label asp-for="Input.FirstName"></label>
-                <input asp-for="Input.FirstName" class="form-control" />
-                <span asp-validation-for="Input.FirstName" class="text-danger"></span>
+                            <div class="col-md-6">
+                                <div class="form-floating mb-3">
+                                    <input asp-for="Input.FirstName" class="form-control" placeholder="First Name" required />
+                                    <label asp-for="Input.FirstName">First Name</label>
+                                    <span asp-validation-for="Input.FirstName" class="text-danger"></span>
+                                </div>
+                                <div class="form-floating mb-3">
+                                    <input asp-for="Input.LastName" class="form-control" placeholder="Last Name" required />
+                                    <label asp-for="Input.LastName">Last Name</label>
+                                    <span asp-validation-for="Input.LastName" class="text-danger"></span>
+                                </div>
+                                <div class="form-floating mb-3">
+                                    <input asp-for="Input.PhoneNumber" class="form-control" placeholder="Phone Number" required />
+                                    <label asp-for="Input.PhoneNumber">Phone Number</label>
+                                    <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
+                                </div>
+                                <div class="form-floating mb-3">
+                                    <input asp-for="Input.Address" class="form-control" placeholder="Address" />
+                                    <label asp-for="Input.Address">Address</label>
+                                    <span asp-validation-for="Input.Address" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-floating mb-3">
+                                    <input asp-for="Input.DateOfBirth" class="form-control" placeholder="Date of Birth" />
+                                    <label asp-for="Input.DateOfBirth">Date of Birth</label>
+                                    <span asp-validation-for="Input.DateOfBirth" class="text-danger"></span>
+                                </div>
+                                <div class="form-floating mb-3">
+                                    <select asp-for="Input.Gender" class="form-control">
+                                        <option value="">Select Gender</option>
+                                        <option value="Male">Male</option>
+                                        <option value="Female">Female</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                    <label asp-for="Input.Gender">Gender</label>
+                                    <span asp-validation-for="Input.Gender" class="text-danger"></span>
+                                </div>
+                                <div class="form-floating mb-3">
+                                    <select asp-for="Input.PreferredLanguage" class="form-control">
+                                        <option value="">Select Preferred Language</option>
+                                        <option value="English">English</option>
+                                        <option value="French">French</option>
+                                    </select>
+                                    <label asp-for="Input.PreferredLanguage">Preferred Language</label>
+                                    <span asp-validation-for="Input.PreferredLanguage" class="text-danger"></span>
+                                </div>
+                                <div class="form-floating mb-3">
+                                    <input asp-for="Input.EmergencyContacts" class="form-control" placeholder="Emergency Contacts" required />
+                                    <label asp-for="Input.EmergencyContacts">Emergency Contacts</label>
+                                    <span asp-validation-for="Input.EmergencyContacts" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <div class="col-12">
+                                <button type="submit" class="btn btn-primary w-100">Save</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
             </div>
-
-            <div class="form-group">
-                <label asp-for="Input.LastName"></label>
-                <input asp-for="Input.LastName" class="form-control" />
-                <span asp-validation-for="Input.LastName" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <label asp-for="Input.PhoneNumber"></label>
-                <input asp-for="Input.PhoneNumber" class="form-control" />
-                <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <label asp-for="Input.Address"></label>
-                <input asp-for="Input.Address" class="form-control" />
-                <span asp-validation-for="Input.Address" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <label asp-for="Input.DateOfBirth"></label>
-                <input asp-for="Input.DateOfBirth" class="form-control" />
-                <span asp-validation-for="Input.DateOfBirth" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <label asp-for="Input.Gender"></label>
-                <input asp-for="Input.Gender" class="form-control" />
-                <span asp-validation-for="Input.Gender" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <label asp-for="Input.PreferredLanguage"></label>
-                <input asp-for="Input.PreferredLanguage" class="form-control" />
-                <span asp-validation-for="Input.PreferredLanguage" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <label asp-for="Input.EmergencyContacts"></label>
-                <input asp-for="Input.EmergencyContacts" class="form-control" />
-                <span asp-validation-for="Input.EmergencyContacts" class="text-danger"></span>
-            </div>
-
-            <button type="submit" class="btn btn-primary">Save</button>
-        </form>
+        </div>
     </div>
-</div>
+</section>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
