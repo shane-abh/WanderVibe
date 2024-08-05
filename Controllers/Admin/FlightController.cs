@@ -6,83 +6,83 @@ namespace WanderVibe.Controllers.Admin
 {
     [Route("admin/[controller]")]
     [Authorize(Roles = "Admin")]
-    public class PackageController : Controller
+    public class FlightController : Controller
     {
         private readonly TravelDbContext _context;
 
-        public PackageController(TravelDbContext context)
+        public FlightController(TravelDbContext context)
         {
             _context = context;
         }
 
-        // GET: admin/package
+        // GET: admin/flight
         [HttpGet("")]
         public IActionResult Index()
         {
-            var packages = _context.TravelPackages.ToList();
-            return View(packages);
+            var flights = _context.Flights.ToList();
+            return View(flights);
         }
 
-        // GET: admin/package/create
+        // GET: admin/flight/create
         [HttpGet("create")]
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: admin/package/create
+        // POST: admin/flight/create
         [HttpPost("create")]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(TravelPackage travelPackage)
+        public IActionResult Create(Flight flight)
         {
             if (ModelState.IsValid)
             {
-                _context.TravelPackages.Add(travelPackage);
+                _context.Flights.Add(flight);
                 _context.SaveChanges();
-                TempData["SuccessMessage"] = $"Package '{travelPackage.PackageName}' added successfully!";
+                TempData["SuccessMessage"] = $"Flight '{flight.FlightNumber}' added successfully!";
                 return RedirectToAction(nameof(Index));
             }
-            return View(travelPackage);
+            return View(flight);
         }
 
-        // GET: admin/package/edit/{id}
+        // GET: admin/flight/edit/{id}
         [HttpGet("edit/{id}")]
         public IActionResult Edit(int id)
         {
-            var travelPackage = _context.TravelPackages.Find(id);
-            if (travelPackage == null)
+            var flight = _context.Flights.Find(id);
+            if (flight == null)
             {
                 return NotFound();
             }
-            return View(travelPackage);
+            return View(flight);
         }
 
-        // POST: admin/package/edit/{id}
+        // POST: admin/flight/edit/{id}]
         [HttpPost("edit/{id}")]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(TravelPackage travelPackage)
+        public IActionResult Edit(Flight flight)
         {
             if (ModelState.IsValid)
             {
-                _context.TravelPackages.Update(travelPackage);
+                _context.Flights.Update(flight);
                 _context.SaveChanges();
-                TempData["SuccessMessage"] = $"Package '{travelPackage.PackageName}' updated successfully!";
+                TempData["SuccessMessage"] = $"Flight '{flight.FlightNumber}' updated successfully!";
                 return RedirectToAction(nameof(Index));
             }
-            return View(travelPackage);
+            return View(flight);
         }
 
-        // POST: admin/package/delete/{id}
+        // POST: admin/flight/delete/{id}
         [HttpPost("delete/{id}")]
         [ValidateAntiForgeryToken]
         public IActionResult Delete(int id)
         {
-            var travelPackage = _context.TravelPackages.Find(id);
-            if (travelPackage != null)
+            var flight = _context.Flights.Find(id);
+            if (flight != null)
             {
-                _context.TravelPackages.Remove(travelPackage);
+                _context.Flights.Remove(flight);
                 _context.SaveChanges();
-                TempData["SuccessMessage"] = $"Package '{travelPackage.PackageName}' deleted successfully!";
+                TempData["SuccessMessage"] = $"Flight '{flight.FlightNumber}' deleted successfully!";
             }
             return RedirectToAction(nameof(Index));
         }
