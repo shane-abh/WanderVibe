@@ -14,7 +14,7 @@ namespace WanderVibe.Models
         [Required]
         public string UserId { get; set; }
         [ForeignKey("UserId")]
-        public User? User { get; set; }
+        public UserProfile? User { get; set; }
 
 
         public int? FlightId { get; set; }

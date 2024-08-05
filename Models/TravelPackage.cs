@@ -10,6 +10,7 @@ namespace WanderVibe.Models
 
         [Required]
         [StringLength(200)]
+        [RegularExpression(@"^[a-zA-Z\s]*$", ErrorMessage = "Only letters and spaces are allowed.")]
         public string? PackageName { get; set; }
 
         [Required]
@@ -23,7 +24,13 @@ namespace WanderVibe.Models
 
         [Required]
         [StringLength(200)]
-        public string? Destination { get; set; }
+        [RegularExpression(@"^[a-zA-Z\s]*$", ErrorMessage = "Only letters and spaces are allowed.")]
+        public string? DestinationFrom { get; set; }
+
+        [Required]
+        [StringLength(200)]
+        [RegularExpression(@"^[a-zA-Z\s]*$", ErrorMessage = "Only letters and spaces are allowed.")]
+        public string? DestinationTo { get; set; }
 
         [Required]
         public DateTime StartDate { get; set; }
