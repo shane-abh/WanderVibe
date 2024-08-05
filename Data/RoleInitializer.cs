@@ -27,7 +27,7 @@ namespace WanderVibe.Data
 
             var powerUser = new UserProfile
             {
-                UserName = "WanderVibe",
+                UserName = "admin@gmail.com",
                 Email = "admin@gmail.com",
                 FirstName = "Admin",
                 LastName = "User",
@@ -43,6 +43,28 @@ namespace WanderVibe.Data
                 if (createPowerUser.Succeeded)
                 {
                     await userManager.AddToRoleAsync(powerUser, "Admin");
+                }
+            }
+            else
+            {
+                // Ensure the admin role is assigned to the existing user
+                if (!await userManager.IsInRoleAsync(user, "Admin"))
+                {
+                    await userManager.AddToRoleAsync(user, "Admin");
+                }
+
+                // Ensure the email is confirmed
+                if (!user.EmailConfirmed)
+                {
+                    user.EmailConfirmed = true;
+                    await userManager.UpdateAsync(user);
+                }
+
+                // Ensure the password is correct
+                var removePasswordResult = await userManager.RemovePasswordAsync(user);
+                if (removePasswordResult.Succeeded)
+                {
+                    await userManager.AddPasswordAsync(user, userPassword);
                 }
             }
         }
