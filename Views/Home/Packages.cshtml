@@ -1,0 +1,76 @@
+﻿@model PackagesViewModel
+@{
+    ViewData["Title"] = "Packages";
+}
+
+<div class="container my-5">
+    <h2 class="text-center mb-4">Search Travel Packages</h2>
+    @using (Html.BeginForm("Packages", "Home", FormMethod.Get, new { id = "filterForm" }))
+    {
+        <div class="row justify-content-center mb-4">
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label for="selectedFrom" class="form-label">From</label>
+                    @Html.DropDownListFor(model => model.SelectedFrom,
+                             new SelectList(Model.UniqueDestinationsFrom, "Select"),
+                             "Select",
+                             new { @class = "form-select" })
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label for="selectedTo" class="form-label">To</label>
+                    @Html.DropDownListFor(model => model.SelectedTo,
+                             new SelectList(Model.UniqueDestinationsTo, "Select"),
+                             "Select",
+                             new { @class = "form-select" })
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label for="selectedDate" class="form-label">Pick Date</label>
+                    @Html.TextBoxFor(model => model.SelectedDate, "{0:yyyy-MM-dd}", new { @class = "form-control", @type = "date" })
+                </div>
+            </div>
+            <div class="col-md-1 d-flex align-items-end">
+                <button type="submit" class="btn btn-primary w-100">Filter</button>
+            </div>
+            <div class="col-md-1 d-flex align-items-end">
+                <a asp-action="Packages" class="btn btn-secondary w-100">Clear</a>
+            </div>
+        </div>
+    }
+
+
+
+
+    <div class="mt-5">
+        @if (Model.Packages != null && Model.Packages.Any())
+        {
+            <h2 class="text-center" style="margin-bottom:25px">Available Packages</h2>
+            <div class="row">
+                @foreach (var package in Model.Packages)
+                {
+                    <div class="col-md-3 mb-4">
+                        <div class="card">
+                            <img src="~/assets/img/@package.ImageUrl" class="card-img-top" alt="Tour Image">
+                            <div class="card-body">
+                                <h4 class="card-title">@package.PackageName</h4>
+                                <h6 class="card-text"><strong>Price:</strong> $@package.Price</h6>
+                                <h6 class="card-text">From: @package.DestinationFrom ---> To: @package.DestinationTo</h6>
+                                <h6 class="card-text">@package?.Description?.Substring(0, Math.Min(@package.Description.Length, 75)) .......</h6>
+                                <a asp-action="PackageDetail" asp-route-id="@package?.PackageId" class="btn btn-primary">View</a>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-warning text-center" role="alert">
+                No packages available.
+            </div>
+        }
+    </div>
+</div>
