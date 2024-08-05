@@ -15,12 +15,12 @@ namespace WanderVibe.Areas.Identity.Pages.Account.Manage
 {
     public class IndexModel : PageModel
     {
-        private readonly UserManager<User> _userManager;
-        private readonly SignInManager<User> _signInManager;
+        private readonly UserManager<UserProfile> _userManager;
+        private readonly SignInManager<UserProfile> _signInManager;
 
         public IndexModel(
-            UserManager<User> userManager,
-            SignInManager<User> signInManager)
+            UserManager<UserProfile> userManager,
+            SignInManager<UserProfile> signInManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -52,29 +52,36 @@ namespace WanderVibe.Areas.Identity.Pages.Account.Manage
         /// </summary>
         public class InputModel
         {
-            /// <summary>
-            ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-            ///     directly from your code. This API may change or be removed in future releases.
-            /// </summary>
+            [Required]
+            [Display(Name = "First Name")]
+            public string FirstName { get; set; }
+
+            [Required]
+            [Display(Name = "Last Name")]
+            public string LastName { get; set; }
+
             [Phone]
             [Display(Name = "Phone number")]
             public string PhoneNumber { get; set; }
 
-            [Display(Name = "First Name")]
-            public string FirstName { get; set; }
-
-            [Display(Name = "Last Name")]
-            public string LastName { get; set; }
+            [Display(Name = "Address")]
+            public string Address { get; set; }
 
             [Display(Name = "Date of Birth")]
             [DataType(DataType.Date)]
-            public DateTime DateOfBirth { get; set; }
+            public DateTime? DateOfBirth { get; set; }
 
             [Display(Name = "Gender")]
-            public Gender Gender { get; set; }
+            public string Gender { get; set; }
+
+            [Display(Name = "Preferred Language")]
+            public string PreferredLanguage { get; set; }
+
+            [Display(Name = "Emergency Contacts")]
+            public string EmergencyContacts { get; set; }
         }
 
-        private async Task LoadAsync(User user)
+        private async Task LoadAsync(UserProfile user)
         {
             var userName = await _userManager.GetUserNameAsync(user);
             var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
@@ -83,11 +90,14 @@ namespace WanderVibe.Areas.Identity.Pages.Account.Manage
 
             Input = new InputModel
             {
-                PhoneNumber = phoneNumber,
                 FirstName = user.FirstName,
                 LastName = user.LastName,
+                PhoneNumber = phoneNumber,
+                Address = user.Address,
                 DateOfBirth = user.DateOfBirth,
-                Gender = user.Gender
+                Gender = user.Gender,
+                PreferredLanguage = user.PreferredLanguage,
+                EmergencyContacts = user.EmergencyContacts
             };
         }
 
@@ -116,6 +126,16 @@ namespace WanderVibe.Areas.Identity.Pages.Account.Manage
                 await LoadAsync(user);
                 return Page();
             }
+
+            // Additional field
+            user.FirstName = Input.FirstName;
+            user.LastName = Input.LastName;
+            user.Address = Input.Address;
+            user.DateOfBirth = Input.DateOfBirth;
+            user.Gender = Input.Gender;
+            user.PreferredLanguage = Input.PreferredLanguage;
+            user.EmergencyContacts = Input.EmergencyContacts;
+
 
             var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
             if (Input.PhoneNumber != phoneNumber)

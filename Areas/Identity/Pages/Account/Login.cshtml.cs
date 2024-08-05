@@ -20,14 +20,12 @@ namespace WanderVibe.Areas.Identity.Pages.Account
 {
     public class LoginModel : PageModel
     {
-        private readonly SignInManager<User> _signInManager;
-        private readonly UserManager<User> _userManager;
+        private readonly SignInManager<UserProfile> _signInManager;
         private readonly ILogger<LoginModel> _logger;
 
-        public LoginModel(SignInManager<User> signInManager, UserManager<User> userManager, ILogger<LoginModel> logger)
+        public LoginModel(SignInManager<UserProfile> signInManager, ILogger<LoginModel> logger)
         {
             _signInManager = signInManager;
-            _userManager = userManager;
             _logger = logger;
         }
 
@@ -118,15 +116,7 @@ namespace WanderVibe.Areas.Identity.Pages.Account
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User logged in.");
-                    var user = await _userManager.FindByEmailAsync(Input.Email);
-                    if (await _userManager.IsInRoleAsync(user, "admin"))
-                    {
-                        return RedirectToAction("Index","Admin");
-                    }
-                    else
-                    {
-                        return RedirectToAction("Index","Home");
-                    }
+                    return LocalRedirect(returnUrl);
                 }
                 if (result.RequiresTwoFactor)
                 {
@@ -139,7 +129,7 @@ namespace WanderVibe.Areas.Identity.Pages.Account
                 }
                 else
                 {
-                    ModelState.AddModelError(string.Empty, "Invalid Login Credentials. Please Try Again Later");
+                    ModelState.AddModelError(string.Empty, "Invalid login attempt.");
                     return Page();
                 }
             }

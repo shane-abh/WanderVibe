@@ -1,10 +1,9 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace WanderVibe.Models
 {
-    public class TravelDbContext : IdentityDbContext<User>
+    public class TravelDbContext : IdentityDbContext<UserProfile>
     {
         public TravelDbContext(DbContextOptions<TravelDbContext> options)
             : base(options)
@@ -20,15 +19,7 @@ namespace WanderVibe.Models
         {
             base.OnModelCreating(modelBuilder);
 
-            var admin = new IdentityRole("admin");
-            admin.NormalizedName = "admin";
-
-            var user = new IdentityRole("user");
-            user.NormalizedName = "user";
-
-            modelBuilder.Entity<IdentityRole>().HasData(admin, user);
-
-            modelBuilder.Entity<User>()
+            modelBuilder.Entity<UserProfile>()
                 .HasMany(u => u.Bookings)
                 .WithOne(b => b.User)
                 .HasForeignKey(b => b.UserId);
@@ -48,6 +39,5 @@ namespace WanderVibe.Models
                 .WithOne(b => b.Hotel)
                 .HasForeignKey(b => b.HotelId);
         }
-
     }
 }

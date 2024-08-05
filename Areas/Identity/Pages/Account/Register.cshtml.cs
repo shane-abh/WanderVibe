@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
@@ -24,17 +25,17 @@ namespace WanderVibe.Areas.Identity.Pages.Account
 {
     public class RegisterModel : PageModel
     {
-        private readonly SignInManager<User> _signInManager;
-        private readonly UserManager<User> _userManager;
-        private readonly IUserStore<User> _userStore;
-        private readonly IUserEmailStore<User> _emailStore;
+        private readonly SignInManager<UserProfile> _signInManager;
+        private readonly UserManager<UserProfile> _userManager;
+        private readonly IUserStore<UserProfile> _userStore;
+        private readonly IUserEmailStore<UserProfile> _emailStore;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
 
         public RegisterModel(
-            UserManager<User> userManager,
-            IUserStore<User> userStore,
-            SignInManager<User> signInManager,
+            UserManager<UserProfile> userManager,
+            IUserStore<UserProfile> userStore,
+            SignInManager<UserProfile> signInManager,
             ILogger<RegisterModel> logger,
             IEmailSender emailSender)
         {
@@ -72,44 +73,47 @@ namespace WanderVibe.Areas.Identity.Pages.Account
         public class InputModel
         {
             [Required]
+            [DataType(DataType.Text)]
             [Display(Name = "First Name")]
             public string FirstName { get; set; }
 
             [Required]
+            [DataType(DataType.Text)]
             [Display(Name = "Last Name")]
-            public string LastName { get; set; }
+            public string LastName { get; set; }            
 
             /// <summary>
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
             [Required]
-            [RegularExpression(@"^[^@\s]+@[^@\s]+\.[^@\s]+$", ErrorMessage = "Enter valid e-mail address like someone@example.com.")]
+            [EmailAddress]
             [Display(Name = "Email")]
             public string Email { get; set; }
 
-
-            [Required]
-            [RegularExpression(@"^\d{3}-\d{3}-\d{4}$", ErrorMessage = "The PhoneNumber field is not a valid phone number. Format should be 123-456-7890.")]
-            [Display(Name = "Phone Number")]
-            public string PhoneNumber { get; set; }
-
-            [Required]
+            // Additional field
             [DataType(DataType.Date)]
             [Display(Name = "Date of Birth")]
-            public DateTime DateOfBirth { get; set; }
+            public DateTime? DateOfBirth { get; set; }
 
-            [Required]
-            [EnumDataType(typeof(Gender))]
+            [StringLength(10)]
             [Display(Name = "Gender")]
-            public Gender Gender { get; set; }
+            public string Gender { get; set; }
+
+            [StringLength(50)]
+            [Display(Name = "Preferred Language")]
+            public string PreferredLanguage { get; set; }
+
+            [StringLength(200)]
+            [Display(Name = "Emergency Contacts")]
+            public string EmergencyContacts { get; set; }
 
             /// <summary>
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
             [Required]
-            [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$", ErrorMessage = "The password must be at least 8 characters long and contain at least one number, one special character, one lowercase letter, and one uppercase letter.")]
+            [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
             [DataType(DataType.Password)]
             [Display(Name = "Password")]
             public string Password { get; set; }
@@ -119,9 +123,13 @@ namespace WanderVibe.Areas.Identity.Pages.Account
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
             [DataType(DataType.Password)]
-            [Display(Name = "Confirm Password")]
+            [Display(Name = "Confirm password")]
             [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
-            public string ConfirmPassword { get; set; }
+            public string ConfirmPassword { get; set; }          
+
+            [StringLength(200)]
+            [Display(Name = "Address")]
+            public string Address { get; set; }
         }
 
 
@@ -137,24 +145,26 @@ namespace WanderVibe.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
-                var user = new User()
-                {
-                     FirstName = Input.FirstName,
-                     LastName = Input.LastName,
-                     UserName = Input.Email,
-                     Email = Input.Email,
-                     PhoneNumber = Input.PhoneNumber,
-                     DateOfBirth = Input.DateOfBirth,
-                     Gender = Input.Gender,
-                };
+                var user = CreateUser();
+
+                await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
+                await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
+
+                user.FirstName = Input.FirstName;
+                user.LastName = Input.LastName;
+                user.Address = Input.Address;
+                user.DateOfBirth = Input.DateOfBirth;
+                user.Gender = Input.Gender;
+                user.PreferredLanguage = Input.PreferredLanguage;
+                user.EmergencyContacts = Input.EmergencyContacts;
+
                 var result = await _userManager.CreateAsync(user, Input.Password);
 
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User created a new account with password.");
 
-                    //set the user role
-                    await _userManager.AddToRoleAsync(user, "user");
+                    await _userManager.AddToRoleAsync(user, "Client");
 
                     var userId = await _userManager.GetUserIdAsync(user);
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
@@ -175,7 +185,7 @@ namespace WanderVibe.Areas.Identity.Pages.Account
                     else
                     {
                         await _signInManager.SignInAsync(user, isPersistent: false);
-                        return RedirectToPage("/Account/Login", new { area = "Identity" });
+                        return LocalRedirect(returnUrl);
                     }
                 }
                 foreach (var error in result.Errors)
@@ -188,27 +198,27 @@ namespace WanderVibe.Areas.Identity.Pages.Account
             return Page();
         }
 
-        private User CreateUser()
+        private UserProfile CreateUser()
         {
             try
             {
-                return Activator.CreateInstance<User>();
+                return Activator.CreateInstance<UserProfile>();
             }
             catch
             {
-                throw new InvalidOperationException($"Can't create an instance of '{nameof(User)}'. " +
-                    $"Ensure that '{nameof(User)}' is not an abstract class and has a parameterless constructor, or alternatively " +
+                throw new InvalidOperationException($"Can't create an instance of '{nameof(UserProfile)}'. " +
+                    $"Ensure that '{nameof(UserProfile)}' is not an abstract class and has a parameterless constructor, or alternatively " +
                     $"override the register page in /Areas/Identity/Pages/Account/Register.cshtml");
             }
         }
 
-        private IUserEmailStore<User> GetEmailStore()
+        private IUserEmailStore<UserProfile> GetEmailStore()
         {
             if (!_userManager.SupportsUserEmail)
             {
                 throw new NotSupportedException("The default UI requires a user store with email support.");
             }
-            return (IUserEmailStore<User>)_userStore;
+            return (IUserEmailStore<UserProfile>)_userStore;
         }
     }
 }
