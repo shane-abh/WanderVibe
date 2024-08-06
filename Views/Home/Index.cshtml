@@ -1,8 +1,37 @@
-﻿@{
+﻿@model List<TravelPackage>
+@{
     ViewData["Title"] = "Home Page";
+    // Shuffle the list of travel packages
+    var random = new Random();
+    var shuffledPackages = Model.OrderBy(x => random.Next()).Take(4).ToList();
+
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="bg-image">
+    <div class="overlay"></div>
+    <div class="content">
+        <h1 class="display-1">Welcome to WanderVibe</h1>
+        <p class="lead">"Traveling – it leaves you speechless, then turns you into a storyteller." – Ibn Battuta</p>
+    </div>
+</div>
+
+<div class="container my-5 mx-auto">
+    <h2 class="text-center" style="margin-bottom:25px">Popular Tour Packages</h2>
+    <div class="row">
+        @foreach (var package in shuffledPackages)
+        {
+            <div class="col-md-3 mb-4">
+                <div class="card">
+                    <img src="~/assets/img/@package.ImageUrl" class="card-img-top" alt="Tour Image">
+                    <div class="card-body">
+                        <h4 class="card-title">@package.PackageName</h4>
+                        <h6 class="card-text"><strong>Price:</strong> $@package.Price</h6>
+                        <h6 class="card-text">From: @package.DestinationFrom ---> To: @package.DestinationTo</h6>
+                        <h6 class="card-text">@package?.Description?.Substring(0, Math.Min(@package.Description.Length, 75)) .......</h6>
+                        <a asp-action="PackageDetail" asp-route-id="@package?.PackageId" class="btn btn-primary">View</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
 </div>

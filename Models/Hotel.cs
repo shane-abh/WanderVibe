@@ -18,7 +18,7 @@ namespace WanderVibe.Models
         [Required]
         [Range(0, double.MaxValue)]
         [Column(TypeName = "decimal(18,2)")]
-        public decimal PricePerNight { get; set; }
+        public decimal? PricePerNight { get; set; }
 
         [Range(0, int.MaxValue)]
         public int Availability { get; set; }

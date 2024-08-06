@@ -1,0 +1,209 @@
+﻿@model WanderVibe.Models.BookingViewModel
+
+@{
+    ViewData["Title"] = "Book Now";
+
+    decimal? totalPrice = TempData["TotalPrice"] != null ? decimal.Parse(TempData["TotalPrice"].ToString()) : (decimal?)null;
+    decimal? totalPackagePrice = TempData["TotalPackagePrice"] != null ? decimal.Parse(TempData["TotalPackagePrice"].ToString()) : (decimal?)null;
+    decimal? totalHotelPrice = TempData["TotalHotelPrice"] != null ? decimal.Parse(TempData["TotalHotelPrice"].ToString()) : (decimal?)null;
+    decimal? totalFlightPrice = TempData["TotalFlightPrice"] != null ? decimal.Parse(TempData["TotalFlightPrice"].ToString()) : (decimal?)null;
+    int? numberOfRooms = TempData["NumberOfRooms"] != null ? int.Parse(TempData["NumberOfRooms"].ToString()) : (int?)null;
+}
+
+<div class="container my-5">
+    <h2 class="text-center mb-4">Book Now - @Model.Package.PackageName</h2>
+
+    <div class="text-center">
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                @TempData["Error"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+    </div>
+
+    <!-- Section 1: Personal Details -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <h4>Personal Details</h4>
+            <div class="form-group">
+                <label for="firstName">First Name</label>
+                <input type="text" id="firstName" class="form-control" value="@Model.User.FirstName" readonly />
+            </div>
+            <div class="form-group">
+                <label for="lastName">Last Name</label>
+                <input type="text" id="lastName" class="form-control" value="@Model.User.LastName" readonly />
+            </div>
+            <div class="form-group">
+                <label for="phoneNumber">Phone Number</label>
+                <input type="text" id="phoneNumber" class="form-control" value="@Model.User.PhoneNumber" readonly />
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" class="form-control" value="@Model.User.Email" readonly />
+            </div>
+        </div>
+    </div>
+
+    <!-- Section 2: Package Details -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <h4>Package Details</h4>
+            <div class="form-group">
+                <label for="packageName">Package Name</label>
+                <input type="text" id="packageName" class="form-control" value="@Model.Package.PackageName" readonly />
+            </div>
+            <div class="form-group">
+                <label for="price">Price</label>
+                <input type="text" id="price" class="form-control" value="@Model.Package.Price.ToString("F2")" readonly />
+            </div>
+            <div class="form-group">
+                <label for="startDate">Start Date</label>
+                <input type="text" id="startDate" class="form-control" value="@Model.Package.StartDate.ToString("d")" readonly />
+            </div>
+            <div class="form-group">
+                <label for="endDate">End Date</label>
+                <input type="text" id="endDate" class="form-control" value="@Model.Package.EndDate.ToString("d")" readonly />
+            </div>
+            <div class="form-group">
+                <label for="source">Source</label>
+                <input type="text" id="source" class="form-control" value="@Model.Package.DestinationFrom" readonly />
+            </div>
+            <div class="form-group">
+                <label for="destination">Destination</label>
+                <input type="text" id="destination" class="form-control" value="@Model.Package.DestinationTo" readonly />
+            </div>
+        </div>
+    </div>
+
+    <!-- Section 3: Hotel Selection -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <h4>Select Hotel</h4>
+            @using (Html.BeginForm("UpdateHotel", "Booking", FormMethod.Post))
+            {
+                @Html.HiddenFor(model => model.Package.PackageId)
+                @Html.HiddenFor(model => model.SelectedFlightId)
+                @Html.HiddenFor(model => model.Quantity)
+                <div class="form-group">
+                    <label for="hotel">Hotel</label>
+                    @Html.DropDownListFor(model => model.SelectedHotelId, new SelectList(Model.Hotels, "HotelId", "HotelName", Model.SelectedHotelId), "Select a Hotel", new { @class = "form-select", @onchange = "this.form.submit();" })
+                </div>
+                @if (Model.SelectedHotel != null)
+                {
+                    <div class="form-group">
+                        <label for="hotelPhoneNumber">Hotel Phone Number</label>
+                        <input type="text" id="hotelPhoneNumber" class="form-control" value="@Model.SelectedHotel.PhoneNumber" readonly />
+                    </div>
+                    <div class="form-group">
+                        <label for="hotelEmail">Hotel Email</label>
+                        <input type="email" id="hotelEmail" class="form-control" value="@Model.SelectedHotel.EmailAddress" readonly />
+                    </div>
+                    <div class="form-group">
+                        <label for="hotelPrice">Hotel Price</label>
+                        <input type="text" id="hotelPrice" class="form-control" value="@Model.SelectedHotel.PricePerNight.ToString()" readonly />
+                    </div>
+                    <p><strong>Disclaimer:</strong> This hotel has only @Model.SelectedHotel.Availability rooms available.</p>
+                }
+            }
+        </div>
+    </div>
+
+    <!-- Section 4: Flight Selection -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <h4>Select Flight</h4>
+            @using (Html.BeginForm("UpdateFlight", "Booking", FormMethod.Post))
+            {
+                @Html.HiddenFor(model => model.Package.PackageId)
+                @Html.HiddenFor(model => model.SelectedHotelId)
+                @Html.HiddenFor(model => model.Quantity)
+                <div class="form-group">
+                    <label for="flight">Flight</label>
+                    @Html.DropDownListFor(model => model.SelectedFlightId, new SelectList(Model.Flights, "FlightId", "FlightNumber", Model.SelectedFlightId), "Select a Flight", new { @class = "form-select", @onchange = "this.form.submit();" })
+                </div>
+                @if (Model.SelectedFlight != null)
+                {
+                    <div class="form-group">
+                        <label for="flightPrice">Flight Price</label>
+                        <input type="text" id="flightPrice" class="form-control" value="@Model.SelectedFlight.Price.ToString("F2")" readonly />
+                    </div>
+                    <p><strong>Disclaimer:</strong> This flight has only @Model.SelectedFlight.Availability seats available.</p>
+                }
+            }
+        </div>
+    </div>
+
+    <div class="form-group">
+        @using (Html.BeginForm("CalculatePrice", "Booking", FormMethod.Post))
+        {
+            <label for="quantity">Quantity</label>
+            @Html.DropDownListFor(model => model.Quantity, Enumerable.Range(1, 10).Select(i => new SelectListItem { Value = i.ToString(), Text = i.ToString() }), "Select Quantity", new { @class = "form-select" })
+
+            @Html.HiddenFor(model => model.Package.PackageId)
+            @Html.HiddenFor(model => model.SelectedHotelId)
+            @Html.HiddenFor(model => model.SelectedFlightId)
+            <button type="submit" class="btn btn-primary mt-3">Calculate Total Price</button>
+        }
+    </div>
+</div>
+
+@if (totalPrice != null)
+{
+    <div class="row mt-5">
+        <div class="col-md-12">
+            <h4>Total Price Details</h4>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Description</th>
+                        <th>Price</th>
+                        <th>Quantity</th>
+                        <th>Total Price</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Package Price</td>
+                        <td>@Model.Package.Price</td>
+                        <td>@Model.Quantity</td>
+                        <td>@TempData["TotalPackagePrice"]</td>
+                    </tr>
+                    @if (Model.SelectedHotel != null)
+                    {
+                        <tr>
+                            <td>Hotel Price</td>
+                            <td>@Model.SelectedHotel.PricePerNight</td>
+                            <td>@numberOfRooms</td>
+                            <td>@TempData["TotalHotelPrice"]</td>
+                        </tr>
+                    }
+                    @if (Model.SelectedFlight != null)
+                    {
+                        <tr>
+                            <td>Flight Price</td>
+                            <td>@Model.SelectedFlight.Price</td>
+                            <td>@Model.Quantity</td>
+                            <td>@TempData["TotalFlightPrice"]</td>
+                        </tr>
+                    }
+                    <tr>
+                        <td colspan="3" class="text-end"><strong>Total Cost</strong></td>
+                        <td><strong>@TempData["TotalPrice"]</strong></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="col-md-6">
+        @using (Html.BeginForm("BookNow", "Booking", FormMethod.Post))
+        {
+            @Html.HiddenFor(model => model.Package.PackageId)
+            @Html.HiddenFor(model => model.SelectedHotelId)
+            @Html.HiddenFor(model => model.SelectedFlightId)
+            @Html.HiddenFor(model => model.Quantity)
+            <button type="submit" class="btn btn-success mt-3">Book Now</button>
+        }
+    </div>
+}
