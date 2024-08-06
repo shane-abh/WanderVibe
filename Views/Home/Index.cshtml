@@ -1,34 +1,36 @@
 ﻿@model List<TravelPackage>
 @{
     ViewData["Title"] = "Home Page";
-    // Shuffle the list of travel packages
     var random = new Random();
     var shuffledPackages = Model.OrderBy(x => random.Next()).Take(4).ToList();
-
 }
 
-<div class="bg-image">
+<!-- Header Section -->
+<div class="header-section">
     <div class="overlay"></div>
     <div class="content">
-        <h1 class="display-1">Welcome to WanderVibe</h1>
-        <p class="lead">"Traveling – it leaves you speechless, then turns you into a storyteller." – Ibn Battuta</p>
+        <h1 class="display-1 animate__animated animate__fadeInDown">Welcome to WanderVibe</h1>
+        <p class="lead animate__animated animate__fadeInUp animate__delay-1s">"Traveling – it leaves you speechless, then turns you into a storyteller." – Ibn Battuta</p>
+        <a href="#popular-packages" class="btn btn-primary btn-lg mt-3 animate__animated animate__fadeInUp animate__delay-1s">Explore Now</a>
     </div>
 </div>
 
-<div class="container my-5 mx-auto">
-    <h2 class="text-center" style="margin-bottom:25px">Popular Tour Packages</h2>
+<!-- Popular Tour Packages Section -->
+<div class="container my-5" id="popular-packages">
+    <h2 class="text-center mb-5">Popular Tour Packages</h2>
     <div class="row">
         @foreach (var package in shuffledPackages)
         {
-            <div class="col-md-3 mb-4">
-                <div class="card">
-                    <img src="~/assets/img/@package.ImageUrl" class="card-img-top" alt="Tour Image">
+            <div class="col-md-4 mb-4">
+                <div class="card custom-card h-100 animate__animated animate__zoomIn">
+                    <img src="@Url.Content("~/Server/Upload/" + package.ImageUrl)" class="card-img-top" alt="@package.PackageName">
                     <div class="card-body">
-                        <h4 class="card-title">@package.PackageName</h4>
-                        <h6 class="card-text"><strong>Price:</strong> $@package.Price</h6>
-                        <h6 class="card-text">From: @package.DestinationFrom ---> To: @package.DestinationTo</h6>
-                        <h6 class="card-text">@package?.Description?.Substring(0, Math.Min(@package.Description.Length, 75)) .......</h6>
-                        <a asp-action="PackageDetail" asp-route-id="@package?.PackageId" class="btn btn-primary">View</a>
+                        <h5 class="card-title">@package.PackageName</h5>
+                        <p class="card-text"><strong>Price:</strong> $@package.Price</p>
+                        <p class="card-text"><strong>From:</strong> @package.DestinationFrom</p>
+                        <p class="card-text"><strong>To:</strong> @package.DestinationTo</p>
+                        <p class="card-text">@package.Description.Substring(0, Math.Min(@package.Description.Length, 40))...</p>
+                        <a asp-action="PackageDetail" asp-route-id="@package.PackageId" class="btn btn-outline-primary btn-block float-end">View Details</a>
                     </div>
                 </div>
             </div>

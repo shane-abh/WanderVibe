@@ -1,8 +1,54 @@
 ﻿@model PackagesViewModel
 @{
     ViewData["Title"] = "Packages";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+<!-- Header Section with Filter Form -->
+<div class="package-header-section">
+    <div class="overlay"></div>
+    <div class="content">
+        <h1 class="display-1">Discover Our Packages</h1>
+        <p class="lead">Find the perfect travel package for your next adventure.</p>
+
+        <!-- Filter Form -->
+        @using (Html.BeginForm("Packages", "Home", FormMethod.Get, new { id = "filterForm" }))
+        {
+            <div class="row justify-content-center mb-4">
+                <div class="col-md-3 animate__animated animate__fadeInLeft animate__delay-1s">
+                    <div class="form-group">
+                        <label for="selectedFrom" class="form-label">From</label>
+                        @Html.DropDownListFor(model => model.SelectedFrom,
+                                 new SelectList(Model.UniqueDestinationsFrom, "Select"),
+                                 "Select",
+                                 new { @class = "form-select" })
+                    </div>
+                </div>
+                <div class="col-md-3 animate__animated animate__fadeInLeft animate__delay-1s">
+                    <div class="form-group">
+                        <label for="selectedTo" class="form-label">To</label>
+                        @Html.DropDownListFor(model => model.SelectedTo,
+                                 new SelectList(Model.UniqueDestinationsTo, "Select"),
+                                 "Select",
+                                 new { @class = "form-select" })
+                    </div>
+                </div>
+                <div class="col-md-3 animate__animated animate__fadeInLeft animate__delay-1s">
+                    <div class="form-group">
+                        <label for="selectedDate" class="form-label">Pick Date</label>
+                        @Html.TextBoxFor(model => model.SelectedDate, "{0:yyyy-MM-dd}", new { @class = "form-control", @type = "date" })
+                    </div>
+                </div>
+                <div class="col-md-3 d-flex align-items-end animate__animated animate__fadeInRight animate__delay-1s">
+                    <button type="submit" class="btn btn-primary">Filter</button>
+                    <a asp-action="Packages" class="btn btn-secondary">Clear</a>
+                </div>                
+            </div>
+        }
+    </div>
+</div>
+
+<!-- Available Packages Section -->
 <div class="container my-5">
     <div class="text-center">
         @if (TempData["Success"] != null)
@@ -13,71 +59,29 @@
             </div>
         }
     </div>
-    <h2 class="text-center mb-4">Search Travel Packages</h2>
-    @using (Html.BeginForm("Packages", "Home", FormMethod.Get, new { id = "filterForm" }))
-    {
-        <div class="row justify-content-center mb-4">
-            <div class="col-md-3">
-                <div class="form-group">
-                    <label for="selectedFrom" class="form-label">From</label>
-                    @Html.DropDownListFor(model => model.SelectedFrom,
-                             new SelectList(Model.UniqueDestinationsFrom, "Select"),
-                             "Select",
-                             new { @class = "form-select" })
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="form-group">
-                    <label for="selectedTo" class="form-label">To</label>
-                    @Html.DropDownListFor(model => model.SelectedTo,
-                             new SelectList(Model.UniqueDestinationsTo, "Select"),
-                             "Select",
-                             new { @class = "form-select" })
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="form-group">
-                    <label for="selectedDate" class="form-label">Pick Date</label>
-                    @Html.TextBoxFor(model => model.SelectedDate, "{0:yyyy-MM-dd}", new { @class = "form-control", @type = "date" })
-                </div>
-            </div>
-            <div class="col-md-1 d-flex align-items-end">
-                <button type="submit" class="btn btn-primary w-100">Filter</button>
-            </div>
-            <div class="col-md-1 d-flex align-items-end">
-                <a asp-action="Packages" class="btn btn-secondary w-100">Clear</a>
-            </div>
-        </div>
-    }
-
-
-
-
-    <div class="mt-5">
+    <h2 class="text-center mb-5">Available Packages</h2>
+    <div class="row">
         @if (Model.Packages != null && Model.Packages.Any())
         {
-            <h2 class="text-center" style="margin-bottom:25px">Available Packages</h2>
-            <div class="row">
-                @foreach (var package in Model.Packages)
-                {
-                    <div class="col-md-3 mb-4">
-                        <div class="card">
-                            <img src="~/assets/img/@package.ImageUrl" class="card-img-top" alt="Tour Image">
-                            <div class="card-body">
-                                <h4 class="card-title">@package.PackageName</h4>
-                                <h6 class="card-text"><strong>Price:</strong> $@package.Price</h6>
-                                <h6 class="card-text">From: @package.DestinationFrom ---> To: @package.DestinationTo</h6>
-                                <h6 class="card-text">@package?.Description?.Substring(0, Math.Min(@package.Description.Length, 75)) .......</h6>
-                                <a asp-action="PackageDetail" asp-route-id="@package?.PackageId" class="btn btn-primary">View</a>
-                            </div>
+            @foreach (var package in Model.Packages)
+            {
+                <div class="col-md-3 mb-4">
+                    <div class="card package-card h-100 animate__animated animate__zoomIn">
+                        <img src="~/Server/Upload/@package.ImageUrl" class="card-img-top" alt="Tour Image">
+                        <div class="card-body">
+                            <h4 class="card-title">@package.PackageName</h4>
+                            <h6 class="card-text"><strong>Price:</strong> $@package.Price</h6>
+                            <h6 class="card-text">From: @package.DestinationFrom ---> To: @package.DestinationTo</h6>
+                            <p class="card-text">@package?.Description?.Substring(0, Math.Min(@package.Description.Length, 75)) .......</p>
+                            <a asp-action="PackageDetail" asp-route-id="@package?.PackageId" class="btn btn-primary">View</a>
                         </div>
                     </div>
-                }
-            </div>
+                </div>
+            }
         }
         else
         {
-            <div class="alert alert-warning text-center" role="alert">
+            <div class="alert alert-warning text-center animate__animated animate__shakeX" role="alert">
                 No packages available.
             </div>
         }
