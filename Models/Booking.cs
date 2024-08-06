@@ -25,7 +25,7 @@ namespace WanderVibe.Models
         [Required]
         [Range(0, double.MaxValue)]
         [Column(TypeName = "decimal(18,2)")]
-        public decimal TotalCost { get; set; }
+        public decimal? TotalCost { get; set; }
 
         [Required]
         [StringLength(100)]
