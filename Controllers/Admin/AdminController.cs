@@ -6,9 +6,9 @@ namespace WanderVibe.Controllers.Admin
 
     
     [Route("admin/")]
+    [Authorize(Roles = "Admin")]
     public class AdminController : Controller
-    {
-        [Authorize(Roles = "Admin")]
+    {        
         [HttpGet("")]
         public IActionResult Dashboard()
         {
