@@ -80,7 +80,7 @@ namespace WanderVibe.Areas.Identity.Pages.Account
             [Required]
             [DataType(DataType.Text)]
             [Display(Name = "Last Name")]
-            public string LastName { get; set; }            
+            public string LastName { get; set; }
 
             /// <summary>
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
@@ -125,7 +125,7 @@ namespace WanderVibe.Areas.Identity.Pages.Account
             [DataType(DataType.Password)]
             [Display(Name = "Confirm password")]
             [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
-            public string ConfirmPassword { get; set; }          
+            public string ConfirmPassword { get; set; }
 
             [StringLength(200)]
             [Display(Name = "Address")]
