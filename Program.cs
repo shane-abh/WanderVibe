@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using WanderVibe;
 using WanderVibe.Models;
 using WanderVibe.Data;
+using Microsoft.Extensions.FileProviders;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -34,6 +35,14 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+
+// Serve static files from the Server/Upload directory
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(
+        Path.Combine(builder.Environment.ContentRootPath, "Server", "Upload")),
+    RequestPath = "/Server/Upload"
+});
 
 app.UseRouting();
 

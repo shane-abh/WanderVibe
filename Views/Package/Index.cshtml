@@ -45,6 +45,7 @@
                                 <th>End Date</th>
                                 <th>Price</th>
                                 <th>Availability</th>
+                                <th>Image</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -59,6 +60,12 @@
                                     <td>@package.EndDate.ToString("yyyy/MM/dd")</td>
                                     <td>$@package.Price</td>
                                     <td>@package.Availability</td>
+                                    <td>
+                                        @if (!string.IsNullOrEmpty(package.ImageUrl))
+                                        {
+                                            <img src="@Url.Content("~/Server/Upload/" + package.ImageUrl)" alt="Package Image" width="100" />
+                                        }
+                                    </td>
                                     <td>
                                         <a asp-controller="package" asp-action="Edit" asp-route-id="@package.PackageId" class="btn btn-primary btn-sm">
                                             <i class="bi bi-pencil-square"></i>

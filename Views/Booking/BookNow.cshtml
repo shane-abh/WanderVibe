@@ -36,8 +36,8 @@
                 <input type="text" id="lastName" class="form-control" value="@Model.User.LastName" readonly />
             </div>
             <div class="form-group">
-                <label for="phoneNumber">Phone Number</label>
-                <input type="text" id="phoneNumber" class="form-control" value="@Model.User.PhoneNumber" readonly />
+                <label for="PhoneNumber">Phone Number</label>
+                <input type="text" id="PhoneNumber" class="form-control" value="@Model.User.PhoneNumber" readonly />
             </div>
             <div class="form-group">
                 <label for="email">Email</label>
@@ -93,12 +93,12 @@
                 @if (Model.SelectedHotel != null)
                 {
                     <div class="form-group">
-                        <label for="hotelPhoneNumber">Hotel Phone Number</label>
-                        <input type="text" id="hotelPhoneNumber" class="form-control" value="@Model.SelectedHotel.PhoneNumber" readonly />
+                        <label for="hotelContact">Hotel Phone Number</label>
+                        <input type="text" id="hotelContact" class="form-control" value="@Model.SelectedHotel.Contact" readonly />
                     </div>
                     <div class="form-group">
                         <label for="hotelEmail">Hotel Email</label>
-                        <input type="email" id="hotelEmail" class="form-control" value="@Model.SelectedHotel.EmailAddress" readonly />
+                        <input type="email" id="hotelEmail" class="form-control" value="@Model.SelectedHotel.Email" readonly />
                     </div>
                     <div class="form-group">
                         <label for="hotelPrice">Hotel Price</label>

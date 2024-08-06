@@ -20,7 +20,7 @@
     <div class="card-body">
         <h5 class="card-title">Edit</h5>
 
-        <form asp-action="Edit" method="post" class="row g-3 needs-validation" novalidate>
+        <form asp-action="Edit" method="post" enctype="multipart/form-data" class="row g-3 needs-validation" novalidate>
             <input type="hidden" asp-for="PackageId" />
             <div class="col-md-12">
                 <div class="form-floating mb-3">
@@ -84,6 +84,14 @@
                     <label for="floatingAvailability">Availability</label>
                     <div class="invalid-feedback">Please provide the availability.</div>
                     <span asp-validation-for="Availability" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="form-floating mb-3">
+                    <input class="form-control" type="file" id="floatingImageUrl" name="imageFile" required>
+                    <label for="floatingImageUrl">Image</label>
+                    <div class="invalid-feedback">Please provide an image.</div>
+                    <span asp-validation-for="ImageUrl" class="text-danger"></span>
                 </div>
             </div>
             <div class="text-end">
