@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using WanderVibe.Models;
 
-namespace WanderVibe.Controllers.Booking
+namespace WanderVibe.Controllers.Client
 {
     [Authorize(Roles = "Client")]
     public class BookingController : Controller
@@ -80,7 +80,7 @@ namespace WanderVibe.Controllers.Booking
             var totalFlightPrice = flight != null ? model.Quantity * flight.Price : 0;
             var totalCost = totalPackagePrice + totalHotelPrice + totalFlightPrice;
 
-            var booking = new Models.Booking
+            var booking = new Booking
             {
                 PackageId = package.PackageId,
                 UserId = _userManager.GetUserId(User),
@@ -207,7 +207,7 @@ namespace WanderVibe.Controllers.Booking
             TempData["TotalFlightPrice"] = totalFlightPrice.ToString();
             TempData["NumberOfRooms"] = numberOfRooms.ToString();
 
-            return RedirectToAction("BookNow", new { id = model.Package.PackageId, selectedHotelId = model.SelectedHotelId , selectedFlightId= model.SelectedFlightId , quantity = model.Quantity });
+            return RedirectToAction("BookNow", new { id = model.Package.PackageId, selectedHotelId = model.SelectedHotelId, selectedFlightId = model.SelectedFlightId, quantity = model.Quantity });
         }
     }
 }
