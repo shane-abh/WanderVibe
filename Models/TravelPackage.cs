@@ -13,8 +13,7 @@ namespace WanderVibe.Models
         [RegularExpression(@"^[a-zA-Z\s]*$", ErrorMessage = "Only letters and spaces are allowed.")]
         public string? PackageName { get; set; }
 
-        [Required]
-        [StringLength(1000)]
+        [Required]        
         public string? Description { get; set; }
 
         [Required]

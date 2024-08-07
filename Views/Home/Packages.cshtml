@@ -4,6 +4,8 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+<link href="~/assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+
 <!-- Header Section with Filter Form -->
 <div class="package-header-section">
     <div class="overlay"></div>
@@ -15,7 +17,7 @@
         @using (Html.BeginForm("Packages", "Home", FormMethod.Get, new { id = "filterForm" }))
         {
             <div class="row justify-content-center mb-4">
-                <div class="col-md-3 animate__animated animate__fadeInLeft animate__delay-1s">
+                <div class="col-md-6 animate__animated animate__fadeInLeft animate__delay-1s">
                     <div class="form-group">
                         <label for="selectedFrom" class="form-label">From</label>
                         @Html.DropDownListFor(model => model.SelectedFrom,
@@ -24,7 +26,7 @@
                                  new { @class = "form-select" })
                     </div>
                 </div>
-                <div class="col-md-3 animate__animated animate__fadeInLeft animate__delay-1s">
+                <div class="col-md-6 animate__animated animate__fadeInLeft animate__delay-1s">
                     <div class="form-group">
                         <label for="selectedTo" class="form-label">To</label>
                         @Html.DropDownListFor(model => model.SelectedTo,
@@ -33,16 +35,18 @@
                                  new { @class = "form-select" })
                     </div>
                 </div>
-                <div class="col-md-3 animate__animated animate__fadeInLeft animate__delay-1s">
+            </div>
+            <div class="row justify-content-center mb-4">
+                <div class="col-md-6 animate__animated animate__fadeInLeft animate__delay-1s">
                     <div class="form-group">
                         <label for="selectedDate" class="form-label">Pick Date</label>
                         @Html.TextBoxFor(model => model.SelectedDate, "{0:yyyy-MM-dd}", new { @class = "form-control", @type = "date" })
                     </div>
                 </div>
-                <div class="col-md-3 d-flex align-items-end animate__animated animate__fadeInRight animate__delay-1s">
+                <div class="col-md-6 d-flex align-items-end gap-2 animate__animated animate__fadeInRight animate__delay-1s">
                     <button type="submit" class="btn btn-primary">Filter</button>
                     <a asp-action="Packages" class="btn btn-secondary">Clear</a>
-                </div>                
+                </div>
             </div>
         }
     </div>
@@ -59,23 +63,30 @@
             </div>
         }
     </div>
-    <h2 class="text-center mb-5">Available Packages</h2>
+    <h2 class="text-center mb-5 fw-bold">Our Packages</h2>
     <div class="row">
         @if (Model.Packages != null && Model.Packages.Any())
         {
             @foreach (var package in Model.Packages)
             {
-                <div class="col-md-3 mb-4">
-                    <div class="card package-card h-100 animate__animated animate__zoomIn">
-                        <img src="~/Server/Upload/@package.ImageUrl" class="card-img-top" alt="Tour Image">
-                        <div class="card-body">
-                            <h4 class="card-title">@package.PackageName</h4>
-                            <h6 class="card-text"><strong>Price:</strong> $@package.Price</h6>
-                            <h6 class="card-text">From: @package.DestinationFrom ---> To: @package.DestinationTo</h6>
-                            <p class="card-text">@package?.Description?.Substring(0, Math.Min(@package.Description.Length, 75)) .......</p>
-                            <a asp-action="PackageDetail" asp-route-id="@package?.PackageId" class="btn btn-primary">View</a>
+                <div class="col-md-4 mb-4">
+                    <a asp-action="PackageDetail" asp-route-id="@package?.PackageId" class="card-link">
+                        <div class="card package-card h-100 animate__animated animate__zoomIn animate__delay-1s">
+                            <img src="~/Server/Upload/@package.ImageUrl" class="card-img-top" alt="Tour Image">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <span><i class="bi bi-clock"></i> 1 Week</span>
+                            </div>
+                            <div class="card-body">
+                                <h4 class="card-title">@package.PackageName</h4>
+                                <h6 class="card-text"><i class="bi bi-geo-alt"></i> @package.DestinationFrom, @package.DestinationTo</h6>
+                                <p class="card-text">@package?.Description?.Substring(0, Math.Min(@package.Description.Length, 75))...</p>
+                            </div>
+                            <div class="card-footer d-flex justify-content-between align-items-center">
+                                <span class="btn btn-primary">Details</span>
+                                <h6 class="card-text"><strong>From <span class="fs-5">$@package.Price</span></strong></h6>
+                            </div>
                         </div>
-                    </div>
+                    </a>
                 </div>
             }
         }
