@@ -21,6 +21,18 @@ namespace WanderVibe.Controllers.Client
         }
 
         [HttpGet]
+        public IActionResult About()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        public IActionResult Contact()
+        {
+            return View();
+        }
+
+        [HttpGet]
         public IActionResult Packages(string? selectedFrom, string? selectedTo, DateTime? selectedDate)
         {
             var packages = _context.TravelPackages.AsQueryable();
