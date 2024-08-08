@@ -17,6 +17,7 @@
 
     <!-- Bootstrap -->
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />    
+    <link href="~/assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
 
     <!-- Styles -->
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
@@ -26,11 +27,11 @@
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
+        <nav class="navbar navbar-expand-lg shadow-sm px-5">
             <div class="container-fluid">
-                <a class="navbar-brand d-flex align-items-center gap-2" asp-area="" asp-controller="Home" asp-action="Index">
+                <a class="navbar-brand d-flex align-items-center gap-2 logo" asp-area="" asp-controller="Home" asp-action="Index">
                     <img src="~/assets/img/logo.png" alt="WanderVibe" class="d-inline-block align-text-top" style="height: 40px;">
-                    WanderVibe
+                    <span class="logo-text">WanderVibe</span>
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -56,12 +57,10 @@
                 </div>
             </div>
         </nav>
-    </header>
-    <div class="mainContainer">
-        <main role="main" class="pb-3">
+    </header>    
+        <main role="main">
             @RenderBody()
-        </main>
-    </div>
+        </main>    
 
     <footer class="border-top footer text-muted">
         <div class="container text-white">

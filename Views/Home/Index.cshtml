@@ -7,6 +7,11 @@
 
 <link href="https://fonts.googleapis.com/css?family=Poppins:200,300,400,500,600,700,800,900" rel="stylesheet">
 <link href="~/assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+<link rel="stylesheet" href="~/carousel/css/owl.carousel.min.css">
+<link rel="stylesheet" href="~/carousel/css/owl.theme.default.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/4.5.6/css/ionicons.min.css">
+<link rel="stylesheet" href="~/carousel/css/animate.css">
+<link rel="stylesheet" href="~/carousel/css/style.css">
 
 <!-- Header Section -->
 <div class="header-section">
@@ -47,16 +52,10 @@
     </div>
 </div>
 
-<link rel="stylesheet" href="~/carousel/css/owl.carousel.min.css">
-<link rel="stylesheet" href="~/carousel/css/owl.theme.default.min.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/4.5.6/css/ionicons.min.css">
-<link rel="stylesheet" href="~/carousel/css/animate.css">
-<link rel="stylesheet" href="~/carousel/css/style.css">
-
 <!-- Image Carousel -->
 <div class="image-carousel">
 <section class="ftco-section">
-    <div class="container">
+    <div class="image-carousel-container">
         <div class="row">
             <div class="col-md-12 text-center">
                     <h2 class="heading-section mb-5 pb-md-4 text-center text-white fw-bold">Our Top Destinations</h2>
@@ -71,7 +70,7 @@
                                     <div class="img d-flex align-items-center justify-content-center" style="background-image: url('./Server/Upload/@package.ImageUrl');">
                                         <div class="text text-center fw-bold">
                                             <h2>@package.PackageName</h2>
-                                            <p>@package.DestinationFrom to @package.DestinationTo</p>
+                                                <p class="text-white">@package.DestinationFrom to @package.DestinationTo</p>
                                         </div>
                                     </div>
                                 </div>

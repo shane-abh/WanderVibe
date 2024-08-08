@@ -4,11 +4,8 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<link href="~/assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
-
 <!-- Header Section with Filter Form -->
-<div class="package-header-section">
-    <div class="overlay"></div>
+<div class="header-section">    
     <div class="content">
         <h1 class="display-1">Discover Our Packages</h1>
         <p class="lead">Find the perfect travel package for your next adventure.</p>
@@ -17,7 +14,7 @@
         @using (Html.BeginForm("Packages", "Home", FormMethod.Get, new { id = "filterForm" }))
         {
             <div class="row justify-content-center mb-4">
-                <div class="col-md-6 animate__animated animate__fadeInLeft animate__delay-1s">
+                <div class="col-md-4 animate__animated animate__fadeInLeft animate__delay-1s">
                     <div class="form-group">
                         <label for="selectedFrom" class="form-label">From</label>
                         @Html.DropDownListFor(model => model.SelectedFrom,
@@ -26,7 +23,7 @@
                                  new { @class = "form-select" })
                     </div>
                 </div>
-                <div class="col-md-6 animate__animated animate__fadeInLeft animate__delay-1s">
+                <div class="col-md-4 animate__animated animate__fadeInLeft animate__delay-1s">
                     <div class="form-group">
                         <label for="selectedTo" class="form-label">To</label>
                         @Html.DropDownListFor(model => model.SelectedTo,
@@ -35,15 +32,15 @@
                                  new { @class = "form-select" })
                     </div>
                 </div>
-            </div>
-            <div class="row justify-content-center mb-4">
-                <div class="col-md-6 animate__animated animate__fadeInLeft animate__delay-1s">
+                <div class="col-md-4 animate__animated animate__fadeInLeft animate__delay-1s">
                     <div class="form-group">
                         <label for="selectedDate" class="form-label">Pick Date</label>
                         @Html.TextBoxFor(model => model.SelectedDate, "{0:yyyy-MM-dd}", new { @class = "form-control", @type = "date" })
                     </div>
                 </div>
-                <div class="col-md-6 d-flex align-items-end gap-2 animate__animated animate__fadeInRight animate__delay-1s">
+            </div>
+            <div class="row justify-content-center mb-4">                
+                <div class="col-md-6 d-flex justify-content-center gap-2 animate__animated animate__fadeInRight animate__delay-1s">
                     <button type="submit" class="btn btn-primary">Filter</button>
                     <a asp-action="Packages" class="btn btn-secondary">Clear</a>
                 </div>
