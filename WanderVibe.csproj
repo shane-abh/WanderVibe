@@ -454,6 +454,13 @@
     <None Include="wwwroot\assets\vendor\tinymce\tinymce.d.ts" />
     <None Include="wwwroot\assets\vendor\tinymce\tinymce.js" />
     <None Include="wwwroot\assets\vendor\tinymce\tinymce.min.js" />
+    <None Include="wwwroot\carousel\css\bootstrap\.DS_Store" />
+    <None Include="wwwroot\carousel\css\bootstrap\mixins\.DS_Store" />
+    <None Include="wwwroot\carousel\fonts\.DS_Store" />
+    <None Include="wwwroot\carousel\images\.DS_Store" />
+    <None Include="wwwroot\carousel\js\.DS_Store" />
+    <None Include="wwwroot\carousel\scss\.DS_Store" />
+    <None Include="wwwroot\carousel\scss\bootstrap\.DS_Store" />
   </ItemGroup>
 
   <ItemGroup>

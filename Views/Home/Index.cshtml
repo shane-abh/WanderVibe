@@ -5,6 +5,9 @@
     var shuffledPackages = Model.OrderBy(x => random.Next()).Take(4).ToList();
 }
 
+<link href="https://fonts.googleapis.com/css?family=Poppins:200,300,400,500,600,700,800,900" rel="stylesheet">
+<link href="~/assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+
 <!-- Header Section -->
 <div class="header-section">
     <div class="overlay"></div>
@@ -17,23 +20,83 @@
 
 <!-- Popular Tour Packages Section -->
 <div class="container my-5" id="popular-packages">
-    <h2 class="text-center mb-5">Popular Tour Packages</h2>
+    <h2 class="text-center mb-5 fw-bold">Our Popular Packages</h2>
     <div class="row">
         @foreach (var package in shuffledPackages)
         {
             <div class="col-md-4 mb-4">
-                <div class="card custom-card h-100 animate__animated animate__zoomIn">
-                    <img src="@Url.Content("~/Server/Upload/" + package.ImageUrl)" class="card-img-top" alt="@package.PackageName">
-                    <div class="card-body">
-                        <h5 class="card-title">@package.PackageName</h5>
-                        <p class="card-text"><strong>Price:</strong> $@package.Price</p>
-                        <p class="card-text"><strong>From:</strong> @package.DestinationFrom</p>
-                        <p class="card-text"><strong>To:</strong> @package.DestinationTo</p>
-                        <p class="card-text">@package.Description.Substring(0, Math.Min(@package.Description.Length, 40))...</p>
-                        <a asp-action="PackageDetail" asp-route-id="@package.PackageId" class="btn btn-outline-primary btn-block float-end">View Details</a>
+                <a asp-action="PackageDetail" asp-route-id="@package?.PackageId" class="card-link">
+                    <div class="card package-card h-100 animate__animated animate__zoomIn animate__delay-1s">
+                        <img src="~/Server/Upload/@package.ImageUrl" class="card-img-top" alt="Tour Image">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <span><i class="bi bi-clock"></i> 1 Week</span>
+                        </div>
+                        <div class="card-body">
+                            <h4 class="card-title">@package.PackageName</h4>
+                            <h6 class="card-text"><i class="bi bi-geo-alt"></i> @package.DestinationFrom, @package.DestinationTo</h6>
+                            <p class="card-text">@package?.Description?.Substring(0, Math.Min(@package.Description.Length, 75))...</p>
+                        </div>
+                        <div class="card-footer d-flex justify-content-between align-items-center">
+                            <span class="btn btn-primary">Details</span>
+                            <h6 class="card-text"><strong>From <span class="fs-5">$@package.Price</span></strong></h6>
+                        </div>
                     </div>
-                </div>
+                </a>
             </div>
         }
     </div>
 </div>
+
+<link rel="stylesheet" href="~/carousel/css/owl.carousel.min.css">
+<link rel="stylesheet" href="~/carousel/css/owl.theme.default.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/4.5.6/css/ionicons.min.css">
+<link rel="stylesheet" href="~/carousel/css/animate.css">
+<link rel="stylesheet" href="~/carousel/css/style.css">
+
+<!-- Image Carousel -->
+<div class="image-carousel">
+<section class="ftco-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 text-center">
+                    <h2 class="heading-section mb-5 pb-md-4 text-center text-white fw-bold">Our Top Destinations</h2>
+            </div>
+            <div class="col-md-12">
+                <div class="slider-hero">
+                    <div class="featured-carousel owl-carousel">
+                        @foreach (var package in shuffledPackages)
+                        {
+                            <div class="item">
+                                <div class="work">
+                                    <div class="img d-flex align-items-center justify-content-center" style="background-image: url('./Server/Upload/@package.ImageUrl');">
+                                        <div class="text text-center fw-bold">
+                                            <h2>@package.PackageName</h2>
+                                            <p>@package.DestinationFrom to @package.DestinationTo</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+
+                    <div class="my-5 text-center">
+                        <ul class="thumbnail">
+                            @foreach (var package in shuffledPackages)
+                            {
+                                <li class="img">
+                                    <a href="#"><img src="~/Server/Upload/@package.ImageUrl" alt="Thumbnail" class="img-fluid"></a>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+</div>
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.2/umd/popper.min.js"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
+<script src="~/carousel/js/owl.carousel.min.js"></script>
+<script src="~/carousel/js/main.js"></script>
