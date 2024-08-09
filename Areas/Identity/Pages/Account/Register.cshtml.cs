@@ -81,6 +81,10 @@ namespace WanderVibe.Areas.Identity.Pages.Account
             public string PreferredLanguage { get; set; }
 
             [StringLength(200)]
+            [Display(Name = "Contacts")]
+            public string PhoneNumber { get; set; }
+
+            [StringLength(200)]
             [Display(Name = "Emergency Contacts")]
             public string EmergencyContacts { get; set; }
 
@@ -123,6 +127,7 @@ namespace WanderVibe.Areas.Identity.Pages.Account
                 user.DateOfBirth = Input.DateOfBirth;
                 user.Gender = Input.Gender;
                 user.PreferredLanguage = Input.PreferredLanguage;
+                user.PhoneNumber = Input.PhoneNumber;
                 user.EmergencyContacts = Input.EmergencyContacts;
 
                 var result = await _userManager.CreateAsync(user, Input.Password);

@@ -1,0 +1,110 @@
+﻿@model IEnumerable<WanderVibe.Models.Service>
+
+@{
+    ViewBag.Title = "View Services";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="pagetitle">
+    <h1>View Services</h1>
+    <nav>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/admin">Home</a></li>
+            <li class="breadcrumb-item">Services</li>
+            <li class="breadcrumb-item active">View</li>
+        </ol>
+    </nav>
+</div><!-- End Page Title -->
+
+<section class="section">
+    <div class="row">
+        <div class="col-lg-12">
+            @if (TempData["SuccessMessage"] != null)
+            {
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    @TempData["SuccessMessage"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="card-title mb-0">Services</h5>
+                        <a asp-action="create" class="btn btn-success">
+                            <i class="bi bi-plus"></i>
+                        </a>
+                    </div>
+                    <!-- Table with stripped rows -->
+                    <table class="table datatable">
+                        <thead>
+                            <tr>
+                                <th>Service Name</th>
+                                <th>Destination</th>
+                                <th>Price</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var service in Model)
+                            {
+                                <tr>
+                                    <td>@service.Name</td>
+                                    <td>@service.Destination</td>
+                                    <td>$@service.Price</td>
+                                    <td>
+                                        <a asp-controller="service" asp-action="Edit" asp-route-id="@service.ServiceId" class="btn btn-primary btn-sm">
+                                            <i class="bi bi-pencil-square"></i>
+                                        </a>
+                                        <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal" data-id="@service.ServiceId">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                    <!-- End Table with stripped rows -->
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Delete Service</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete this service?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form id="deleteForm" method="post" asp-controller="service" asp-action="delete" asp-route-id="0">
+                    <input type="hidden" name="id" id="deleteServiceId" value="" />
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        var deleteModal = document.getElementById('deleteModal');
+        deleteModal.addEventListener('show.bs.modal', function (event) {
+            var button = event.relatedTarget;
+            var serviceId = button.getAttribute('data-id');
+            var deleteInput = document.getElementById('deleteServiceId');
+            deleteInput.value = serviceId;
+
+            var deleteForm = document.getElementById('deleteForm');
+            deleteForm.action = '/admin/service/delete/' + serviceId;
+        });
+    </script>
+}
