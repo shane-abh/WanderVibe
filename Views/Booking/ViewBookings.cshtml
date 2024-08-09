@@ -1,0 +1,143 @@
+﻿@model IEnumerable<WanderVibe.Models.Booking>
+
+@{
+    ViewBag.Title = "View Bookings";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="pagetitle">
+    <h1>View Bookings</h1>
+    <nav>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/admin">Home</a></li>
+            <li class="breadcrumb-item">Booking</li>
+            <li class="breadcrumb-item active">View</li>
+        </ol>
+    </nav>
+</div><!-- End Page Title -->
+
+<section class="section">
+    <div class="row">
+        <div class="col-lg-12">
+            @if (TempData["SuccessMessage"] != null)
+            {
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    @TempData["SuccessMessage"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="card-title mb-0">Bookings</h5>
+                    </div>
+                    <!-- Table with stripped rows -->
+                    <table class="table datatable">
+                        <thead>
+                            <tr>
+                                <th>First Name</th>
+                                <th>Last Name</th>
+                                <th>Package Name</th>
+                                <th>Hotel Name</th>
+                                <th>Flight Number</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var booking in Model)
+                            {
+                                <tr>
+                                    <td>@booking.User.FirstName</td>
+                                    <td>@booking.User.LastName</td>
+                                    <td>@booking.TravelPackage.PackageName</td>
+                                    <td>@booking.Hotel?.HotelName</td>
+                                    <td>@booking.Flight?.FlightNumber</td>
+                                    <td>
+                                        <button type="button" class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#viewBookingModal" data-id="@booking.BookingId">
+                                            <i class="bi bi-eye"></i> View
+                                        </button>                                        
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                    <!-- End Table with stripped rows -->
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Modal for viewing booking details -->
+<div class="modal fade" id="viewBookingModal" tabindex="-1" aria-labelledby="viewBookingModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="viewBookingModalLabel">Booking Details</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <h6 class="text-primary">User Details</h6>
+                        <p><strong>First Name:</strong> <span id="firstName"></span></p>
+                        <p><strong>Last Name:</strong> <span id="lastName"></span></p>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <h6 class="text-primary">Package Details</h6>
+                        <p><strong>Package Name:</strong> <span id="packageName"></span></p>
+                        <p><strong>Destination From:</strong> <span id="destinationFrom"></span></p>
+                        <p><strong>Destination To:</strong> <span id="destinationTo"></span></p>
+                        <p><strong>Price:</strong> $<span id="packagePrice"></span></p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <h6 class="text-primary">Hotel Details</h6>
+                        <p><strong>Hotel Name:</strong> <span id="hotelName"></span></p>
+                        <p><strong>Location:</strong> <span id="hotelLocation"></span></p>
+                        <p><strong>Price Per Night:</strong> $<span id="hotelPrice"></span></p>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <h6 class="text-primary">Flight Details</h6>
+                        <p><strong>Flight Number:</strong> <span id="flightNumber"></span></p>
+                        <p><strong>Departure City:</strong> <span id="departureCity"></span></p>
+                        <p><strong>Arrival City:</strong> <span id="arrivalCity"></span></p>
+                        <p><strong>Price:</strong> $<span id="flightPrice"></span></p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer border-top-0">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var viewBookingModal = document.getElementById('viewBookingModal');
+        viewBookingModal.addEventListener('show.bs.modal', function (event) {
+            var button = event.relatedTarget;
+            var bookingId = button.getAttribute('data-id');
+
+            fetch(`/admin/booking/details/${bookingId}`)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('firstName').textContent = data.user.firstName;
+                    document.getElementById('lastName').textContent = data.user.lastName;
+                    document.getElementById('packageName').textContent = data.package.packageName;
+                    document.getElementById('destinationFrom').textContent = data.package.destinationFrom;
+                    document.getElementById('destinationTo').textContent = data.package.destinationTo;
+                    document.getElementById('packagePrice').textContent = data.package.price.toFixed(2);
+                    document.getElementById('hotelName').textContent = data.hotel?.hotelName || "N/A";
+                    document.getElementById('hotelLocation').textContent = data.hotel?.location || "N/A";
+                    document.getElementById('hotelPrice').textContent = data.hotel?.pricePerNight?.toFixed(2) || "N/A";
+                    document.getElementById('flightNumber').textContent = data.flight?.flightNumber || "N/A";
+                    document.getElementById('departureCity').textContent = data.flight?.departureCity || "N/A";
+                    document.getElementById('arrivalCity').textContent = data.flight?.arrivalCity || "N/A";
+                    document.getElementById('flightPrice').textContent = data.flight?.price?.toFixed(2) || "N/A";
+                });
+        });
+    });
+</script>
