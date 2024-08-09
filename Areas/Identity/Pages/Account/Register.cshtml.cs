@@ -80,13 +80,9 @@ namespace WanderVibe.Areas.Identity.Pages.Account
             [Display(Name = "Preferred Language")]
             public string PreferredLanguage { get; set; }
 
-            [StringLength(200)]
+            [RegularExpression(@"^(\+1\s\d{3}\s\d{3}\s\d{4}|\(\d{3}\)\s\d{3}\s\d{4}|\d{3}\s\d{3}\s\d{4})$", ErrorMessage = "Phone number format is not valid. Accepted formats: +1 123 123 1234, (123) 123 1234, 123 123 1234.")]
             [Display(Name = "Contacts")]
             public string PhoneNumber { get; set; }
-
-            [StringLength(200)]
-            [Display(Name = "Emergency Contacts")]
-            public string EmergencyContacts { get; set; }
 
             [Required]
             [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
@@ -127,8 +123,7 @@ namespace WanderVibe.Areas.Identity.Pages.Account
                 user.DateOfBirth = Input.DateOfBirth;
                 user.Gender = Input.Gender;
                 user.PreferredLanguage = Input.PreferredLanguage;
-                user.PhoneNumber = Input.PhoneNumber;
-                user.EmergencyContacts = Input.EmergencyContacts;
+                user.PhoneNumber = Input.PhoneNumber;                
 
                 var result = await _userManager.CreateAsync(user, Input.Password);
 
