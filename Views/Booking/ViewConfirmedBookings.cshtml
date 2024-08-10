@@ -1,17 +1,17 @@
 ﻿@model IEnumerable<WanderVibe.Models.Booking>
 
 @{
-    ViewBag.Title = "View Bookings";
+    ViewBag.Title = "View Confirmed Bookings";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
 <div class="pagetitle">
-    <h1>Pending Bookings</h1>
+    <h1>Confirmed Bookings</h1>
     <nav>
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="/admin">Home</a></li>
             <li class="breadcrumb-item">Booking</li>
-            <li class="breadcrumb-item active">View</li>
+            <li class="breadcrumb-item active">Confirmed</li>
         </ol>
     </nav>
 </div><!-- End Page Title -->
@@ -29,7 +29,7 @@
             <div class="card">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center">
-                        <h5 class="card-title mb-0">Pending Bookings</h5>
+                        <h5 class="card-title mb-0">Confirmed Bookings</h5>
                     </div>
                     <!-- Table with stripped rows -->
                     <table class="table datatable">
@@ -53,7 +53,7 @@
                                     <td>@(booking.TravelPackage?.PackageName ?? "N/A")</td>
                                     <td>@(booking.Hotel?.HotelName ?? "N/A")</td>
                                     <td>@(booking.Flight?.FlightNumber ?? "N/A")</td>
-                                    <td><span class="badge bg-warning">@(booking.Status ?? "N/A")</span></td>
+                                    <td><span class="badge bg-success">@(booking.Status ?? "N/A")</span></td>                                    
                                     <td>
                                         <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#viewBookingModal-@booking.BookingId">
                                             <i class="bi bi-eye"></i> View

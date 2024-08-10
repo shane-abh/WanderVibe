@@ -2,7 +2,8 @@
 @{
     ViewData["Title"] = "Home Page";
     var random = new Random();
-    var shuffledPackages = Model.OrderBy(x => random.Next()).Take(4).ToList();
+    var shuffledPackages = Model.OrderBy(x => random.Next()).Take(6).ToList();
+    var imageSlider = Model.OrderBy(x => random.Next()).Take(4).ToList();
 }
 
 <link href="https://fonts.googleapis.com/css?family=Poppins:200,300,400,500,600,700,800,900" rel="stylesheet">
@@ -63,12 +64,12 @@
             <div class="col-md-12">
                 <div class="slider-hero">
                     <div class="featured-carousel owl-carousel">
-                        @foreach (var package in shuffledPackages)
+                        @foreach (var package in imageSlider)
                         {
                             <div class="item">
                                 <div class="work">
                                     <div class="img d-flex align-items-center justify-content-center" style="background-image: url('./Server/Upload/@package.ImageUrl');">
-                                        <div class="text text-center fw-bold">
+                                            <div class="text text-center fw-bold w-75">
                                             <h2>@package.PackageName</h2>
                                                 <p class="text-white">@package.DestinationFrom to @package.DestinationTo</p>
                                         </div>
@@ -80,7 +81,7 @@
 
                     <div class="my-5 text-center">
                         <ul class="thumbnail">
-                            @foreach (var package in shuffledPackages)
+                            @foreach (var package in imageSlider)
                             {
                                 <li class="img">
                                     <a href="#"><img src="~/Server/Upload/@package.ImageUrl" alt="Thumbnail" class="img-fluid"></a>

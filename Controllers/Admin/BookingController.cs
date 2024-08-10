@@ -20,13 +20,28 @@ namespace WanderVibe.Controllers.Admin
         [HttpGet("")]
         public IActionResult Index()
         {
-            var bookings = _context.Bookings
+            var pendingBookings = _context.Bookings
                 .Include(b => b.User)
                 .Include(b => b.TravelPackage)
                 .Include(b => b.Hotel)
                 .Include(b => b.Flight)
+                .Where(b => b.Status == "Pending")
                 .ToList();
-            return View("ViewBookings", bookings);
+            return View("ViewBookings", pendingBookings);
+        }
+
+        [HttpGet("confirmed")]
+        public IActionResult ViewConfirmedBookings()
+        {
+            var confirmedBookings = _context.Bookings
+                .Include(b => b.User)
+                .Include(b => b.TravelPackage)
+                .Include(b => b.Hotel)
+                .Include(b => b.Flight)
+                .Where(b => b.Status == "Confirmed")
+                .ToList();
+
+            return View("ViewConfirmedBookings", confirmedBookings);
         }
 
         [HttpGet("details/{id}")]

@@ -115,19 +115,7 @@
 
         <!-- Recent Bookings -->
         <div class="col-12">
-            <div class="card recent-sales overflow-auto">
-                <div class="filter">
-                    <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                        <li class="dropdown-header text-start">
-                            <h6>Filter</h6>
-                        </li>
-                        <li><a class="dropdown-item" href="#">Today</a></li>
-                        <li><a class="dropdown-item" href="#">This Month</a></li>
-                        <li><a class="dropdown-item" href="#">This Year</a></li>
-                    </ul>
-                </div>
-
+            <div class="card recent-sales overflow-auto">               
                 <div class="card-body">
                     <h5 class="card-title">Recent Bookings</h5>
                     <table class="table table-borderless datatable">
@@ -136,7 +124,8 @@
                                 <th scope="col">#</th>
                                 <th scope="col">Customer</th>
                                 <th scope="col">Package</th>
-                                <th scope="col">Price</th>                                
+                                <th scope="col">Price</th>
+                                <th scope="col">Status</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -146,7 +135,17 @@
                                     <th scope="row"><a href="#">#@booking.BookingId</a></th>
                                     <td>@booking.User.FirstName @booking.User.LastName</td>
                                     <td><a href="#" class="text-primary">@booking.TravelPackage.PackageName</a></td>
-                                    <td>$@booking.TotalCost.ToString("0.00")</td>                                   
+                                    <td>$@booking.TotalCost.ToString("0.00")</td>
+                                    <td>
+                                        @if (booking.Status == "Pending")
+                                        {
+                                            <span class="badge bg-warning">@booking.Status</span>
+                                        }
+                                        else if (booking.Status == "Confirmed")
+                                        {
+                                            <span class="badge bg-success">@booking.Status</span>
+                                        }
+                                    </td>
                                 </tr>
                             }
                         </tbody>

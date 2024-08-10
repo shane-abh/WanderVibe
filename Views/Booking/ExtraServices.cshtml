@@ -24,7 +24,7 @@
             <div class="card-body">
                 <h5 class="card-title">Select Services</h5>
                 <div class="form-group">
-                    <label for="services">Choose Services (Optional):</label>
+                    <label for="services">Choose Services*:</label>
                     @Html.ListBoxFor(model => model.SelectedServiceIds, new SelectList(
                              Model?.Services?.Select(s => new
                              {
