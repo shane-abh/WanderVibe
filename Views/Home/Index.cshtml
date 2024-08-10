@@ -34,7 +34,7 @@
                     <div class="card package-card h-100 animate__animated animate__zoomIn animate__delay-1s">
                         <img src="~/Server/Upload/@package.ImageUrl" class="card-img-top" alt="Tour Image">
                         <div class="card-header d-flex justify-content-between align-items-center">
-                            <span><i class="bi bi-clock"></i> 1 Week</span>
+                            <span><i class="bi bi-clock"></i>@package.NoOfDays Days</span>
                         </div>
                         <div class="card-body">
                             <h4 class="card-title">@package.PackageName</h4>
@@ -43,7 +43,7 @@
                         </div>
                         <div class="card-footer d-flex justify-content-between align-items-center">
                             <span class="btn btn-primary">Details</span>
-                            <h6 class="card-text"><strong>From <span class="fs-5">$@package.Price</span></strong></h6>
+                            <h6 class="card-text"><strong>From <span class="fs-5">$@package?.Price</span></strong></h6>
                         </div>
                     </div>
                 </a>

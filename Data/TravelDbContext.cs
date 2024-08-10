@@ -15,6 +15,7 @@ namespace WanderVibe.Models
         public DbSet<Flight> Flights { get; set; }
         public DbSet<Hotel> Hotels { get; set; }
         public DbSet<Service> Services { get; set; }
+        public DbSet<BookingService> BookingServices { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

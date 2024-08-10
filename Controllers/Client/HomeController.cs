@@ -62,6 +62,7 @@ namespace WanderVibe.Controllers.Client
                 .Distinct()
                 .ToList();
 
+
             var model = new PackagesViewModel
             {
                 Packages = packages.ToList(),
@@ -69,7 +70,7 @@ namespace WanderVibe.Controllers.Client
                 UniqueDestinationsTo = uniqueDestinationsTo,
                 SelectedFrom = selectedFrom,
                 SelectedTo = selectedTo,
-                SelectedDate = selectedDate
+                SelectedDate = selectedDate,
             };
 
             return View(model);

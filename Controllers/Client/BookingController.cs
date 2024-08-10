@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
 using WanderVibe.Models;
@@ -20,9 +21,9 @@ namespace WanderVibe.Controllers.Client
         }
 
         [HttpGet]
-        public async Task<IActionResult> BookNow(int id, int? selectedHotelId, int? selectedFlightId, int? quantity)
+        public async Task<IActionResult> PackageDetails(int id)
         {
-            var package = _context.TravelPackages.FirstOrDefault(p => p.PackageId == id);
+            var package = await _context.TravelPackages.FirstOrDefaultAsync(p => p.PackageId == id);
             if (package == null)
             {
                 return NotFound();
@@ -30,184 +31,431 @@ namespace WanderVibe.Controllers.Client
 
             var user = await _userManager.GetUserAsync(User);
 
-            var hotels = _context.Hotels.Where(h => h.Location == package.DestinationTo).ToList();
-            var flights = _context.Flights.Where(f => f.ArrivalCity == package.DestinationTo && f.DepartureCity == package.DestinationFrom).ToList();
-            int hotelId = 0;
-            Hotel hotel = null;
-            if (selectedHotelId != null)
-            {
-                hotelId = selectedHotelId.Value;
-                hotel = _context.Hotels.FirstOrDefault(h => h.HotelId == hotelId);
-            }
-            int flightId = 0;
-            Flight flight = null;
-            if (selectedFlightId != null)
-            {
-                flightId = selectedFlightId.Value;
-                flight = _context.Flights.FirstOrDefault(f => f.FlightId == flightId);
-            }
-            int qty = 0;
-            if (quantity != null)
-            {
-                qty = quantity.Value;
-            }
-            var model = new BookingViewModel
+            var model = new BasicDetailViewModel
             {
                 User = user,
-                Package = package,
-                Hotels = hotels,
-                Flights = flights,
-                SelectedHotelId = hotelId,
-                SelectedHotel = hotel,
-                SelectedFlight = flight,
-                SelectedFlightId = flightId,
-                Quantity = qty,
+                Package = package
             };
 
             return View(model);
         }
 
         [HttpPost]
-        public IActionResult BookNow(BookingViewModel model)
+        public IActionResult PackageDetails(BasicDetailViewModel model)
         {
-            var package = _context.TravelPackages.FirstOrDefault(p => p.PackageId == model.Package.PackageId);
-            var hotel = _context.Hotels.FirstOrDefault(h => h.HotelId == model.SelectedHotelId);
-            var flight = _context.Flights.FirstOrDefault(f => f.FlightId == model.SelectedFlightId);
-
-            var totalPackagePrice = model.Quantity * package?.Price;
-            var numberOfRooms = (int)Math.Ceiling((double)model.Quantity / 2);
-            var totalHotelPrice = hotel != null ? numberOfRooms * hotel.PricePerNight : 0;
-            var totalFlightPrice = flight != null ? model.Quantity * flight.Price : 0;
-            var totalCost = totalPackagePrice + totalHotelPrice + totalFlightPrice;
-
+            // Create a new Booking object with the data from the form
             var booking = new Booking
             {
-                PackageId = package.PackageId,
+                PackageId = model.Package.PackageId,
                 UserId = _userManager.GetUserId(User),
-                FlightId = flight.FlightId,
                 BookingDate = DateTime.Now,
-                TotalCost = totalCost,
-                Status = "Confirmed",
-                HotelId = hotel.HotelId
+                Status = "Pending"
             };
 
+            // Save the booking to the database
             _context.Bookings.Add(booking);
-
-            package.Availability -= model.Quantity;
-            hotel.Availability -= numberOfRooms;
-            flight.Availability -= model.Quantity;
-
             _context.SaveChanges();
 
-            TempData["Success"] = "Booking Done Successfully";
+            // Store additional data in TempData
+            TempData["DestinationFrom"] = model.Package.DestinationFrom;
+            TempData["DestinationTo"] = model.Package.DestinationTo;
+            TempData["PackageName"] = model.Package.PackageName;
 
-            return RedirectToAction("Packages", "Home");
+            // Pass the necessary data to the next page, such as the BookingId
+            return RedirectToAction("ServicesDetails", "Booking", new { bookingId = booking.BookingId });
         }
 
-        [HttpPost]
-        public IActionResult UpdateHotel(BookingViewModel model)
+        [HttpGet]
+        public IActionResult BackToHome(int packageId)
         {
-            var package = _context.TravelPackages.FirstOrDefault(p => p.PackageId == model.Package.PackageId);
-            if (package == null)
+            var userId = _userManager.GetUserId(User);
+
+            // Find the pending booking for the current user and package
+            var pendingBooking = _context.Bookings
+                                         .FirstOrDefault(b => b.PackageId == packageId && b.UserId == userId && b.Status == "Pending");
+
+            // If a pending booking exists, remove it
+            if (pendingBooking != null)
+            {
+                _context.Bookings.Remove(pendingBooking);
+                _context.SaveChanges();
+            }
+
+            // Redirect to the Home/Index action
+            return RedirectToAction("Index", "Home");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ServicesDetails(int bookingId)
+        {
+            var booking = await _context.Bookings
+                .Include(b => b.TravelPackage)
+                .Include(b => b.User)
+                .FirstOrDefaultAsync(b => b.BookingId == bookingId);
+
+            if (booking == null)
             {
                 return NotFound();
             }
 
-            var user = _userManager.GetUserAsync(User).Result;
+            // Ensure that the TravelPackage is properly loaded
+            if (booking.TravelPackage == null)
+            {
+                return NotFound("Travel package not found for this booking.");
+            }
 
-            var hotels = _context.Hotels.Where(h => h.Location == package.DestinationTo).ToList();
-            var flights = _context.Flights.Where(f => f.ArrivalCity == package.DestinationTo && f.DepartureCity == package.DestinationFrom).ToList();
+            // Fetch unique hotels based on the destination of the travel package
+            var hotels = await _context.Hotels
+                .Where(h => h.Location == booking.TravelPackage.DestinationTo)
+                .GroupBy(h => h.HotelName) 
+                .Select(g => g.First())
+                .ToListAsync();
 
-            model.User = user;
-            model.Package = package;
-            model.Hotels = hotels;
-            model.Flights = flights;
-            model.SelectedHotel = _context.Hotels.FirstOrDefault(h => h.HotelId == model.SelectedHotelId);
-            model.SelectedFlight = _context.Flights.FirstOrDefault(f => f.FlightId == model.SelectedFlightId);
+            // Fetch unique flights based on the travel package's destination and departure locations
+            var flights = await _context.Flights
+                .Where(f => f.ArrivalCity == booking.TravelPackage.DestinationTo && f.DepartureCity == booking.TravelPackage.DestinationFrom)
+                .GroupBy(f => f.FlightNumber)  
+                .Select(g => g.First())
+                .ToListAsync();
 
-            return View("BookNow", model);
+            // Prepare the view model with necessary data
+            var model = new ServiceDetailViewModel
+            {
+                User = booking.User,
+                Package = booking.TravelPackage,
+                Hotels = hotels,
+                Flights = flights,
+                Quantity = null
+            };
+            ViewBag.BookingId = bookingId;
+
+            return View(model);
         }
 
         [HttpPost]
-        public IActionResult UpdateFlight(BookingViewModel model)
+        public async Task<IActionResult> ServicesDetails(ServiceDetailViewModel model, string action, int bookingId)
         {
-            var package = _context.TravelPackages.FirstOrDefault(p => p.PackageId == model.Package.PackageId);
-            if (package == null)
+            // Get the current user's ID
+            var userId = _userManager.GetUserId(User);
+
+            // Find the booking based on BookingId, UserId, and Status == "Pending"
+            var booking = await _context.Bookings
+                .Include(b => b.TravelPackage)
+                .Include(b => b.User)
+                .FirstOrDefaultAsync(b => b.BookingId == bookingId
+                                        && b.UserId == userId
+                                        && b.Status == "Pending");
+
+            if (booking == null)
             {
                 return NotFound();
             }
 
-            var user = _userManager.GetUserAsync(User).Result;
+            // Fetch all hotels and flights for the dropdowns
+            var allHotels = await _context.Hotels
+                .Where(h => h.Location == booking.TravelPackage.DestinationTo)
+                .ToListAsync();
 
-            var hotels = _context.Hotels.Where(h => h.Location == package.DestinationTo).ToList();
-            var flights = _context.Flights.Where(f => f.ArrivalCity == package.DestinationTo && f.DepartureCity == package.DestinationFrom).ToList();
+            var allFlights = await _context.Flights
+                .Where(f => f.ArrivalCity == booking.TravelPackage.DestinationTo
+                            && f.DepartureCity == booking.TravelPackage.DestinationFrom)
+                .ToListAsync();
+
+            model.Hotels = allHotels
+                .DistinctBy(h => h.HotelName)
+                .ToList();
+
+            model.Flights = allFlights
+                .DistinctBy(f => f.FlightNumber)
+                .ToList();
 
 
-            model.User = user;
-            model.Package = package;
-            model.Hotels = hotels;
-            model.Flights = flights;
-            model.SelectedHotel = _context.Hotels.FirstOrDefault(h => h.HotelId == model.SelectedHotelId);
-            model.SelectedFlight = _context.Flights.FirstOrDefault(f => f.FlightId == model.SelectedFlightId);
+            // Handle the "Reset" action
+            if (action == "Reset")
+            {
+                model.SelectedHotelId = null;
+                model.SelectedHotel = null;
+                model.SelectedFlightId = null;
+                model.SelectedFlight = null;
+                model.Quantity = null;
 
+                // Redirect back to the same action with the bookingId
+                return RedirectToAction("ServicesDetails", "Booking" ,new { bookingId = bookingId });
+            }
 
-            return View("BookNow", model);
+            // Handle the "Get Details" action for Hotel
+            if (action == "GetHotelDetails")
+            {
+                model.SelectedHotel = await _context.Hotels
+                    .FirstOrDefaultAsync(h => h.HotelId == model.SelectedHotelId);
+
+                model.SelectedHotelId = model.SelectedHotel?.HotelId;
+
+                // Ensure the flight selection persists if a flight has been selected
+                if (model.SelectedFlightId.HasValue)
+                {
+                    model.SelectedFlight = await _context.Flights
+                        .FirstOrDefaultAsync(f => f.FlightId == model.SelectedFlightId);
+                }
+            }
+
+            // Handle the "Get Details" action for Flight
+            if (action == "GetFlightDetails")
+            {
+                model.SelectedFlight = await _context.Flights
+                    .FirstOrDefaultAsync(f => f.FlightId == model.SelectedFlightId);
+
+                model.SelectedFlightId = model.SelectedFlight?.FlightId;
+
+                // Ensure the hotel selection persists if a hotel has been selected
+                if (model.SelectedHotelId.HasValue)
+                {
+                    model.SelectedHotel = await _context.Hotels
+                        .FirstOrDefaultAsync(h => h.HotelId == model.SelectedHotelId);
+                }
+            }
+
+            // Handle the "Next" action
+            if (action == "Next")
+            {
+                // Check if a hotel is selected
+                if (model.SelectedHotelId == null )
+                {
+                    TempData["Error"] = "Please Select a Hotel First";
+                    return RedirectToAction("ServicesDetails", "Booking", new { bookingId = booking.BookingId });
+                }
+
+                // Check if a flight is selected
+                if (model.SelectedFlightId == null)
+                {
+                    TempData["Error"] = "Please Select a Flight First. ";
+                    return RedirectToAction("ServicesDetails", "Booking", new { bookingId = booking.BookingId });
+                }
+
+                if (model.Quantity == null || model.Quantity <= 0)
+                {
+                    TempData["Error"] = "Quantity must be Greater then Zero.";
+                    return RedirectToAction("ServicesDetails", "Booking", new { bookingId = booking.BookingId });
+                }
+
+                // Fetch the selected hotel and flight details
+                var selectedHotel = await _context.Hotels.FirstOrDefaultAsync(h => h.HotelId == model.SelectedHotelId);
+                var selectedFlight = await _context.Flights.FirstOrDefaultAsync(f => f.FlightId == model.SelectedFlightId);
+
+                // Check hotel room availability (1 room per 2 people)
+                int requiredRooms = (int)Math.Ceiling(model.Quantity.Value / 2.0);
+                if (selectedHotel != null && selectedHotel.Availability < requiredRooms)
+                {
+                    TempData["Error"] = $"Not enough rooms available in {selectedHotel.HotelName}. Only {selectedHotel.Availability} rooms are available.";
+                    return RedirectToAction("ServicesDetails", "Booking", new { bookingId = booking.BookingId });
+                }
+
+                // Check flight availability
+                if (selectedFlight != null && selectedFlight.Availability < model.Quantity)
+                {
+                    TempData["Error"] = $"Not enough seats available on flight {selectedFlight.FlightNumber}. Only {selectedFlight.Availability} seats are available.";
+                    return RedirectToAction("ServicesDetails", "Booking", new { bookingId = booking.BookingId });
+                }
+
+                // Update the booking with selected hotel, flight, and quantity
+                booking.HotelId = model.SelectedHotelId;
+                booking.FlightId = model.SelectedFlightId;
+
+                // Store the updated booking in the database
+                _context.Bookings.Update(booking);
+                await _context.SaveChangesAsync();
+
+                TempData["Quantity"] = model.Quantity;
+                // Redirect to the OrderSummary page, passing the bookingId
+                return RedirectToAction("ExtraServices", "Booking", new { bookingId = booking.BookingId });
+            }
+
+            ViewBag.BookingId = bookingId;
+            return View(model);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ExtraServices(int bookingId)
+        {
+            // Find the booking based on BookingId
+            var booking = await _context.Bookings
+                .Include(b => b.TravelPackage)
+                .Include(b => b.User)
+                .FirstOrDefaultAsync(b => b.BookingId == bookingId);
+
+            if (booking == null)
+            {
+                return NotFound();
+            }
+
+            // Ensure that the TravelPackage is properly loaded
+            if (booking.TravelPackage == null)
+            {
+                return NotFound("Travel package not found for this booking.");
+            }
+
+            // Fetch services based on the travel package destination
+            var services = await _context.Services
+                .Where(s => s.Destination == booking.TravelPackage.DestinationTo)
+                .ToListAsync();
+
+            // Prepare the view model with necessary data
+            var model = new ServiceDetailViewModel
+            {
+                User = booking.User,
+                Package = booking.TravelPackage,
+                Services = services, 
+                SelectedHotelId = booking.HotelId,
+                SelectedFlightId = booking.FlightId,
+            };
+
+            ViewBag.BookingId = bookingId;
+
+            return View(model);
         }
 
         [HttpPost]
-        public IActionResult CalculatePrice(BookingViewModel model)
+        public async Task<IActionResult> ExtraServices(ServiceDetailViewModel model, int bookingId)
         {
-            var package = _context.TravelPackages.FirstOrDefault(p => p.PackageId == model.Package.PackageId);
-            var hotel = _context.Hotels.FirstOrDefault(h => h.HotelId == model.SelectedHotelId);
-            var flight = _context.Flights.FirstOrDefault(f => f.FlightId == model.SelectedFlightId);
-            int? quantity = model.Quantity;
+            // Get the current user's ID
+            var userId = _userManager.GetUserId(User);
 
-            if (hotel == null)
+            // Find the booking based on BookingId, UserId, and Status == "Pending"
+            var booking = await _context.Bookings
+                .Include(b => b.TravelPackage)
+                .Include(b => b.User)
+                .FirstOrDefaultAsync(b => b.BookingId == bookingId
+                                        && b.UserId == userId
+                                        && b.Status == "Pending");
+
+            if (booking == null)
             {
-                TempData["Error"] = "Select hotel First.";
-                return RedirectToAction("BookNow", "Booking", new { id = model.Package.PackageId, selectedHotelId = model.SelectedHotelId, selectedFlightId = model.SelectedFlightId, quantity = model.Quantity });
-            }
-            if (flight == null)
-            {
-                TempData["Error"] = "Select Flight First.";
-                return RedirectToAction("BookNow", new { id = model.Package.PackageId, selectedHotelId = model.SelectedHotelId, selectedFlightId = model.SelectedFlightId, quantity = model.Quantity });
-            }
-            if (quantity == 0)
-            {
-                TempData["Error"] = "Select Person Quantity.";
-                return RedirectToAction("BookNow", "Booking", new { id = model.Package.PackageId, selectedHotelId = model.SelectedHotelId, selectedFlightId = model.SelectedFlightId, quantity = model.Quantity });
-            }
-            if (package?.Availability < model.Quantity)
-            {
-                TempData["Error"] = "Not enough availability for the selected package.";
-                return RedirectToAction("BookNow", new { id = model.Package.PackageId, selectedHotelId = model.SelectedHotelId, selectedFlightId = model.SelectedFlightId, quantity = model.Quantity });
+                return NotFound();
             }
 
-            if (hotel.Availability < model.Quantity)
+            // Check if any services were selected
+            if (model.SelectedServiceIds != null && model.SelectedServiceIds.Any())
             {
-                TempData["Error"] = "Not enough availability for the selected hotel.";
-                return RedirectToAction("BookNow", new { id = model.Package.PackageId, selectedHotelId = model.SelectedHotelId, selectedFlightId = model.SelectedFlightId, quantity = model.Quantity });
+                // Add the selected services to the booking
+                foreach (var serviceId in model.SelectedServiceIds)
+                {
+                    var bookingService = new BookingService
+                    {
+                        BookingId = booking.BookingId,
+                        ServiceId = serviceId
+                    };
+                    _context.BookingServices.Add(bookingService);
+                }
+
+                // Save the changes to the database
+                await _context.SaveChangesAsync();
             }
 
-            if (flight.Availability < model.Quantity)
-            {
-                TempData["Error"] = "Not enough availability for the selected flight.";
-                return RedirectToAction("BookNow", new { id = model.Package.PackageId, selectedHotelId = model.SelectedHotelId, selectedFlightId = model.SelectedFlightId, quantity = model.Quantity });
+            // Redirect to the OrderSummary page, passing the bookingId
+            return RedirectToAction("BookingSummary", "Booking", new { bookingId = booking.BookingId });
             }
 
-            var totalPackagePrice = model.Quantity * package?.Price;
-            var numberOfRooms = (int)Math.Ceiling((double)model.Quantity / 2);
-            var totalHotelPrice = hotel != null ? numberOfRooms * hotel.PricePerNight : 0;
-            var totalFlightPrice = flight != null ? model.Quantity * flight.Price : 0;
-            var totalCost = totalPackagePrice + totalHotelPrice + totalFlightPrice;
+        [HttpGet]
+        public async Task<IActionResult> BookingSummary(int bookingId)
+        {
+            // Retrieve the booking with the related entities
+            var booking = await _context.Bookings
+                .Include(b => b.TravelPackage)
+                .Include(b => b.Hotel)
+                .Include(b => b.Flight)
+                .Include(b => b.BookingServices)
+                    .ThenInclude(bs => bs.Service)
+                .FirstOrDefaultAsync(b => b.BookingId == bookingId);
 
-            TempData["TotalPrice"] = totalCost.ToString();
-            TempData["TotalPackagePrice"] = totalPackagePrice.ToString();
-            TempData["TotalHotelPrice"] = totalHotelPrice.ToString();
-            TempData["TotalFlightPrice"] = totalFlightPrice.ToString();
-            TempData["NumberOfRooms"] = numberOfRooms.ToString();
+            if (booking == null)
+            {
+                return NotFound("Booking not found.");
+            }
 
-            return RedirectToAction("BookNow", new { id = model.Package.PackageId, selectedHotelId = model.SelectedHotelId, selectedFlightId = model.SelectedFlightId, quantity = model.Quantity });
+            // Retrieve the quantity from TempData
+            int quantity = TempData["Quantity"] != null ? Convert.ToInt32(TempData["Quantity"]) : 1;
+
+            // Prepare the view model
+            var model = new BookingSummaryViewModel
+            {
+                BookingId = booking.BookingId,
+                Package = booking.TravelPackage,
+                SelectedHotel = booking.Hotel,
+                SelectedFlight = booking.Flight,
+                SelectedServices = booking.BookingServices.Select(bs => bs.Service).ToList(),
+                Quantity = quantity
+            };
+
+            return View(model);
         }
+
+        [HttpPost]
+        public async Task<IActionResult> BookingSummary(BookingSummaryViewModel model)
+        {
+            // Get the current user's ID
+            var userId = _userManager.GetUserId(User);
+
+            // Find the booking based on BookingId, UserId, and Status == "Pending"
+            var booking = await _context.Bookings
+                .Include(b => b.TravelPackage)
+                .Include(b => b.User)
+                .Include(b => b.Hotel)
+                .Include(b => b.Flight)
+                .Include(b => b.BookingServices)
+                    .ThenInclude(bs => bs.Service)
+                .FirstOrDefaultAsync(b => b.BookingId == model.BookingId
+                                        && b.UserId == userId
+                                        && b.Status == "Pending");
+
+            if (booking == null)
+            {
+                return NotFound();
+            }
+
+            // Calculate the total cost
+            decimal? totalCost = booking?.TravelPackage?.Price * model.Quantity;
+
+            // Decrease the availability for the hotel (1 room per 2 people) and add to total cost
+            if (booking?.Hotel != null)
+            {
+                int roomsRequired = (int)Math.Ceiling(model.Quantity / 2.0);
+                booking.Hotel.Availability -= roomsRequired;
+                totalCost += booking.Hotel.PricePerNight * roomsRequired;
+            }
+
+            // Decrease the availability for the flight and add to total cost
+            if (booking?.Flight != null)
+            {
+                booking.Flight.Availability -= model.Quantity;
+                totalCost += booking.Flight.Price * model.Quantity;
+            }
+
+            // Add the cost of each selected service
+            foreach (var service in booking.BookingServices.Select(bs => bs.Service))
+            {
+                totalCost += service.Price * model.Quantity;
+            }
+
+            // Update the booking's total cost
+            booking.TotalCost = (decimal)totalCost;
+
+            // Update the booking status to confirmed
+            booking.Status = "Confirmed";
+
+            // Decrease the availability for the package
+            booking.TravelPackage.Availability -= model.Quantity;
+
+            // Save changes to the database
+            _context.Bookings.Update(booking);
+            await _context.SaveChangesAsync();
+
+            TempData["Success"] = "Trip Booked Successfully.";
+
+            // Redirect to the confirmation page or home page
+            return RedirectToAction("Index", "Home");
+        }
+
+
     }
 }
+
