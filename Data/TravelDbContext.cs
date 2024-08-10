@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using WanderVibe.Data;
 
 namespace WanderVibe.Models
 {
@@ -40,6 +41,9 @@ namespace WanderVibe.Models
                 .HasMany(h => h.Bookings)
                 .WithOne(b => b.Hotel)
                 .HasForeignKey(b => b.HotelId);
+
+            // Seed data
+            TravelDbContextSeed.Seed(modelBuilder);
         }
     }
 }
