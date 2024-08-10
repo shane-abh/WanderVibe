@@ -1,0 +1,93 @@
+﻿@model WanderVibe.Models.BookingSummaryViewModel
+
+@{
+    ViewData["Title"] = $"Booking Summary of {Model.Package.PackageName}";
+}
+
+<div class="container mt-5">
+    <!-- Main Heading -->
+    <div class="text-center mb-4">
+        <h1>Booking Summary Of @Model.Package.PackageName</h1>
+    </div>
+
+    <!-- Booking Information -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <h5><strong>Booking Number:</strong> @Model.BookingId</h5>
+        </div>
+        <div class="col-md-6 text-end">
+            <h5><strong>Date:</strong> @DateTime.Now.ToString("MMMM dd, yyyy")</h5>
+        </div>
+    </div>
+
+    <!-- Booking Summary Table -->
+    <div class="card">
+        <div class="card-body">
+            <form asp-action="BookingSummary" asp-controller="Booking" method="post">
+                @* Hidden fields to pass the bookingId and view model data *@
+                <input type="hidden" asp-for="BookingId" />
+                <input type="hidden" asp-for="Package.PackageId" />
+                <input type="hidden" asp-for="Quantity" />
+
+                @* Render the table *@
+                <table class="table table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Description</th>
+                            <th class="text-center">Price per Person</th>
+                            <th class="text-center">Quantity</th>
+                            <th class="text-end">Total Price</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Package -->
+                        <tr>
+                            <td>@Model.Package.PackageName</td>
+                            <td class="text-center">$@Model.Package.Price</td>
+                            <td class="text-center">@Model.Quantity</td>
+                            <td class="text-end">$@(Model.Package.Price * Model.Quantity)</td>
+                        </tr>
+
+                        <!-- Hotel -->
+                        <tr>
+                            <td>@Model.SelectedHotel.HotelName</td>
+                            <td class="text-center">$@Model.SelectedHotel.PricePerNight</td>
+                            <td class="text-center">@Model.Quantity</td>
+                            <td class="text-end">$@(Model.SelectedHotel.PricePerNight * Math.Ceiling((decimal)Model.Quantity / 2))</td>
+                        </tr>
+
+                        <!-- Flight -->
+                        <tr>
+                            <td>Flight Number @Model.SelectedFlight.FlightNumber from @Model.SelectedFlight.DepartureCity to @Model.SelectedFlight.ArrivalCity</td>
+                            <td class="text-center">$@Model.SelectedFlight.Price</td>
+                            <td class="text-center">@Model.Quantity</td>
+                            <td class="text-end">$@(Model.SelectedFlight.Price * Model.Quantity)</td>
+                        </tr>
+
+                        <!-- Additional Services -->
+                        @foreach (var service in Model.SelectedServices)
+                        {
+                            <tr>
+                                <td>@service.Name</td>
+                                <td class="text-center">$@service.Price</td>
+                                <td class="text-center">@Model.Quantity</td>
+                                <td class="text-end">$@(service.Price * Model.Quantity)</td>
+                            </tr>
+                        }
+
+                        <!-- Total -->
+                        <tr class="table-primary">
+                            <td colspan="3" class="text-end"><strong>Total</strong></td>
+                            <td class="text-end"><strong>$@Model.TotalCost</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!-- Book Now Button -->
+                <div class="d-flex justify-content-end mt-3">
+                    <button type="submit" class="btn btn-primary">Book Now</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

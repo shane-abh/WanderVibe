@@ -1,0 +1,80 @@
+﻿@model WanderVibe.Models.BasicDetailViewModel
+
+@{
+    ViewData["Title"] = "Basic Details";
+}
+
+<div class="container mt-5">
+    <!-- Main Heading -->
+    <div class="text-center mb-4">
+        <h1>Booking For @Model?.Package?.PackageName</h1>
+    </div>
+
+    <!-- Heading and Back to Home Button -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Basic Details</h2>
+        <a href="@Url.Action("BackToHome", "Booking", new { packageId = Model?.Package?.PackageId })" class="btn btn-secondary">Back to Home</a>
+    </div>
+
+    <!-- Personal Information and Package Information Form -->
+    <form asp-action="PackageDetails" method="post">
+        <input type="hidden" name="Package.PackageId" value="@Model?.Package?.PackageId" />
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5 class="card-title">Personal Information</h5>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="firstName" class="form-label">First Name</label>
+                        <input type="text" class="form-control" id="firstName" name="FirstName" value="@Model?.User?.FirstName" readonly>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="lastName" class="form-label">Last Name</label>
+                        <input type="text" class="form-control" id="lastName" name="LastName" value="@Model?.User?.LastName" readonly>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="phoneNumber" class="form-label">Phone Number</label>
+                        <input type="text" class="form-control" id="phoneNumber" name="PhoneNumber" value="@Model?.User?.PhoneNumber" readonly>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="email" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="email" name="Email" value="@Model?.User?.Email" readonly>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Package Information -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5 class="card-title">Package Details</h5>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="packageName" class="form-label">Package Name</label>
+                        <input type="text" class="form-control" id="packageName" name="PackageName" value="@Model?.Package?.PackageName" readonly>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="price" class="form-label">Price</label>
+                        <input type="text" class="form-control" id="price" name="Price" value="$@Model?.Package?.Price" readonly>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="startDate" class="form-label">Start Date</label>
+                        <input type="text" class="form-control" id="startDate" name="StartDate" value="@Model?.Package?.StartDate.ToString("d")" readonly>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="endDate" class="form-label">End Date</label>
+                        <input type="text" class="form-control" id="endDate" name="EndDate" value="@Model?.Package?.EndDate.ToString("d")" readonly>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Buttons -->
+        <div class="d-flex justify-content-end mb-2">
+            <button type="submit" class="btn btn-primary">Next</button>
+        </div>
+    </form>
+</div>

@@ -37,6 +37,15 @@ namespace WanderVibe.Models
         [Required]
         public DateTime EndDate { get; set; }
 
+        [NotMapped]
+        public int NoOfDays
+        {
+            get
+            {
+                return (EndDate - StartDate).Days;
+            }
+        }
+
         [Range(0, int.MaxValue)]
         public int Availability { get; set; }
 

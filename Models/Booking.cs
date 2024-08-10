@@ -25,7 +25,7 @@ namespace WanderVibe.Models
         [Required]
         [Range(0, double.MaxValue)]
         [Column(TypeName = "decimal(18,2)")]
-        public decimal? TotalCost { get; set; }
+        public decimal TotalCost { get; set; }
 
         [Required]
         [StringLength(100)]
@@ -36,5 +36,8 @@ namespace WanderVibe.Models
         public TravelPackage? TravelPackage { get; set; }
         public Flight? Flight { get; set; }
         public Hotel? Hotel { get; set; }
+
+        // Navigation property for the many-to-many relationship
+        public ICollection<BookingService> BookingServices { get; set; } = new List<BookingService>();
     }
 }

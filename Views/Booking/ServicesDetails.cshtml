@@ -1,0 +1,118 @@
+﻿@model WanderVibe.Models.ServiceDetailViewModel
+
+@{
+    ViewData["Title"] = $"Booking for {Model.Package.PackageName}";
+}
+
+<div class="container mt-5">
+    <!-- Alert box section to display the success message -->
+    <div class="text-center">
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                @TempData["Error"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+    </div>
+    <!-- Main Heading -->
+    <div class="text-center mb-4">
+        <h1>Booking For @Model?.Package?.PackageName</h1>
+    </div>
+
+    <!-- Heading and Back to Home Button -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Add Hotel and Flight for the Trip</h2>
+        <a href="@Url.Action("BackToHome", "Booking", new { packageId = Model?.Package?.PackageId })" class="btn btn-secondary">Back to Home</a>
+    </div>
+
+    <form asp-action="ServicesDetails" method="post">
+        <input type="hidden" name="Package.PackageId" value="@Model?.Package?.PackageId" />
+        <input type="hidden" name="User.Id" value="@Model?.User?.Id" />
+        <input type="hidden" name="BookingId" value="@ViewBag.BookingId" />
+        <input type="hidden" value="@Model?.SelectedHotelId" />
+        <input type="hidden" value="@Model?.SelectedFlightId" />
+
+        <!-- Hotel Selection -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5 class="card-title">Select Hotel in @Model?.Package?.DestinationTo</h5>
+                <div class="form-group row">
+                    <div class="col-md-10">
+                        <select class="form-select" asp-for="SelectedHotelId" asp-items="@(new SelectList(Model?.Hotels, "HotelId", "HotelName", Model?.SelectedHotelId))">
+                            <option value="null">Select a Hotel</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2 d-flex justify-content-center align-items-center">
+                        <button type="submit" name="action" value="GetHotelDetails" class="btn btn-primary d-flex align-items-center">Get Hotel Details</button>
+                    </div>
+                </div>
+                @if (Model?.SelectedHotel != null)
+                {
+                    <div class="row mt-3">
+                        <div class="col-md-10">
+                            <div class="form-group">
+                                <label for="hotelPhoneNumber">Phone Number</label>
+                                <input type="text" id="hotelPhoneNumber" class="form-control" value="@Model.SelectedHotel.Contact" readonly />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-10">
+                            <div class="form-group">
+                                <label for="hotelEmail">Email Address</label>
+                                <input type="email" id="hotelEmail" class="form-control" value="@Model.SelectedHotel.Email" readonly />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-10">
+                            <p class="text-danger"><strong>Disclaimer:</strong> @Model.SelectedHotel.HotelName has only @Model.SelectedHotel.Availability rooms available.</p>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <!-- Flight Selection -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5 class="card-title">Select Flight from @Model?.Package?.DestinationFrom to @Model?.Package?.DestinationTo</h5>
+                <div class="form-group row">
+                    <div class="col-md-10">
+                        <select class="form-select" asp-for="SelectedFlightId" asp-items="@(new SelectList(Model?.Flights, "FlightId", "FlightNumber", Model?.SelectedFlightId))">
+                            <option value="">Select a Flight</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2 d-flex justify-content-center align-items-center">
+                        <button type="submit" name="action" value="GetFlightDetails" class="btn btn-primary">Get Flight Details</button>
+                    </div>
+                </div>
+                @if (Model?.SelectedFlight != null)
+                {
+                    <div class="row mt-3">
+                        <div class="col-md-10">
+                            <div class="form-group">
+                                <label for="flightPrice">Flight Price</label>
+                                <input type="text" id="flightPrice" class="form-control" value="$@Model.SelectedFlight.Price" readonly />
+                            </div>
+                            <p class="mt-3 text-danger"><strong>Disclaimer:</strong> Flight @Model.SelectedFlight.FlightNumber has only @Model.SelectedFlight.Availability seats available.</p>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <!-- Quantity Field -->
+        <div class="form-group mb-4">
+            <label for="quantity">Quantity</label>
+            <input type="number" class="form-control" id="quantity" name="Quantity" value="@Model?.Quantity">
+        </div>
+
+        <!-- Buttons -->
+        <div class="d-flex justify-content-between">
+            <button type="submit" name="action" value="Reset" class="btn btn-secondary">Reset</button>
+            <button type="submit" name="action" value="Next" class="btn btn-primary">Next</button>
+        </div>
+    </form>
+</div>
