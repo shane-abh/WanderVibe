@@ -4,44 +4,49 @@
     ViewData["Title"] = $"Add Services for {Model.Package.PackageName}";
 }
 
-<div class="container mt-5">
+<div class="container extra-services-container">
     <!-- Main Heading -->
-    <div class="text-center mb-4">
+    <div class="extra-services-header text-center">
         <h1>Booking For @Model?.Package?.PackageName</h1>
     </div>
 
-    <!-- Sub Heading and Back to Home Button -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2>Select One Service Atleast for @Model?.Package?.PackageName</h2>
+    <div class="text-start fw-bold">
+        <h2 class="fw-bold">Services</h2>
     </div>
 
-    <!-- Form Wrapper -->
     <form asp-action="ExtraServices" method="post">
         <input type="hidden" name="bookingId" value="@ViewBag.BookingId" />
 
         <!-- Services Selection -->
-        <div class="card mb-4">
-            <div class="card-body">
-                <h5 class="card-title">Select Services</h5>
-                <div class="form-group">
-                    <label for="services">Choose Services*:</label>
-                    @Html.ListBoxFor(model => model.SelectedServiceIds, new SelectList(
-                             Model?.Services?.Select(s => new
-                             {
-                                 ServiceId = s.ServiceId,
-                                 Display = $"{s.Name} - ${s.Price}"
-                             }),
-                             "ServiceId", "Display", Model?.SelectedServiceIds),
-                             new { @class = "form-select", style = "height: 200px;" })
-                    <small class="form-text text-muted">Hold down the CTRL (Windows) or Command (Mac) button to select multiple services.</small>
+        <div class="row">
+            @foreach (var service in Model.Services)
+            {
+                var isChecked = Model.SelectedServiceIds.Contains(service.ServiceId) ? "checked" : "";
+                <div class="col-md-3 mb-4">
+                    <div class="card service-card" style="cursor: pointer;" onclick="toggleCheckbox(this)">
+                        <img src="@service.ImageUrl" alt="@service.Name" class="card-img-top">
+                        <input type="checkbox" name="SelectedServiceIds" value="@service.ServiceId" class="form-check-input service-checkbox" @isChecked>
+                        <div class="card-body service-card-body">
+                            <div>
+                                <h5 class="service-card-title">@service.Name</h5>
+                                <p class="service-card-price">$@service.Price</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
+            }
         </div>
 
-        <!-- Buttons -->
-        <div class="d-flex justify-content-end"> 
-            <button type="submit" class="btn btn-primary">Confirm Booking</button>
+        <!-- Confirm Button -->
+        <div class="d-flex justify-content-end">
+            <button type="submit" class="btn btn-primary confirm-button">Confirm Booking</button>
         </div>
     </form>
 </div>
 
+<script>
+    function toggleCheckbox(card) {
+        const checkbox = card.querySelector('input[type="checkbox"]');
+        checkbox.checked = !checkbox.checked;
+    }
+</script>

@@ -2,9 +2,11 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using System.Linq;
 using System.Threading.Tasks;
 using WanderVibe.Models;
+using WanderVibe.Services; // Ensure this is correct
 
 namespace WanderVibe.Controllers.Client
 {
@@ -13,13 +15,15 @@ namespace WanderVibe.Controllers.Client
     {
         private readonly TravelDbContext _context;
         private readonly UserManager<UserProfile> _userManager;
+        private readonly ImageService _imageService;
 
-        public BookingController(TravelDbContext context, UserManager<UserProfile> userManager)
+        public BookingController(TravelDbContext context, UserManager<UserProfile> userManager, ImageService imageService)
         {
             _context = context;
             _userManager = userManager;
+            _imageService = imageService;
         }
-
+    
         [HttpGet]
         public async Task<IActionResult> PackageDetails(int id)
         {
@@ -281,6 +285,8 @@ namespace WanderVibe.Controllers.Client
             var booking = await _context.Bookings
                 .Include(b => b.TravelPackage)
                 .Include(b => b.User)
+                .Include(b => b.BookingServices)
+                    .ThenInclude(bs => bs.Service)
                 .FirstOrDefaultAsync(b => b.BookingId == bookingId);
 
             if (booking == null)
@@ -299,14 +305,26 @@ namespace WanderVibe.Controllers.Client
                 .Where(s => s.Destination == booking.TravelPackage.DestinationTo)
                 .ToListAsync();
 
+            // Fetch images from Unsplash or another source
+            foreach (var service in services)
+            {
+                service.ImageUrl = await _imageService.GetImageForService(service.Name);
+            }
+
+            // Get the list of already selected service IDs for this booking
+            var selectedServiceIds = booking.BookingServices
+                .Select(bs => bs.ServiceId.Value) // Convert nullable int? to non-nullable int
+                .ToList();
+
             // Prepare the view model with necessary data
             var model = new ServiceDetailViewModel
             {
                 User = booking.User,
                 Package = booking.TravelPackage,
-                Services = services, 
+                Services = services,
                 SelectedHotelId = booking.HotelId,
                 SelectedFlightId = booking.FlightId,
+                SelectedServiceIds = selectedServiceIds,
             };
 
             ViewBag.BookingId = bookingId;
@@ -324,36 +342,56 @@ namespace WanderVibe.Controllers.Client
             var booking = await _context.Bookings
                 .Include(b => b.TravelPackage)
                 .Include(b => b.User)
+                .Include(b => b.BookingServices)
                 .FirstOrDefaultAsync(b => b.BookingId == bookingId
-                                        && b.UserId == userId
-                                        && b.Status == "Pending");
+                                          && b.UserId == userId
+                                          && b.Status == "Pending");
 
             if (booking == null)
             {
                 return NotFound();
             }
 
-            // Check if any services were selected
+            // Get the list of existing service IDs
+            var existingServiceIds = booking.BookingServices.Select(bs => bs.ServiceId.Value).ToList();
+
+            // Handle services that were checked (add if not already in the database)
             if (model.SelectedServiceIds != null && model.SelectedServiceIds.Any())
             {
-                // Add the selected services to the booking
                 foreach (var serviceId in model.SelectedServiceIds)
                 {
-                    var bookingService = new BookingService
+                    if (!existingServiceIds.Contains(serviceId))
                     {
-                        BookingId = booking.BookingId,
-                        ServiceId = serviceId
-                    };
-                    _context.BookingServices.Add(bookingService);
+                        var bookingService = new BookingService
+                        {
+                            BookingId = booking.BookingId,
+                            ServiceId = serviceId
+                        };
+                        _context.BookingServices.Add(bookingService);
+                    }
                 }
-
-                // Save the changes to the database
-                await _context.SaveChangesAsync();
             }
+
+            // Handle services that were unchecked (remove from the database)
+            var servicesToRemove = existingServiceIds.Except(model.SelectedServiceIds ?? new List<int>()).ToList();
+            if (servicesToRemove.Any())
+            {
+                foreach (var serviceId in servicesToRemove)
+                {
+                    var serviceToRemove = booking.BookingServices.FirstOrDefault(bs => bs.ServiceId == serviceId);
+                    if (serviceToRemove != null)
+                    {
+                        _context.BookingServices.Remove(serviceToRemove);
+                    }
+                }
+            }
+
+            // Save the changes to the database
+            await _context.SaveChangesAsync();
 
             // Redirect to the OrderSummary page, passing the bookingId
             return RedirectToAction("BookingSummary", "Booking", new { bookingId = booking.BookingId });
-            }
+        }
 
         [HttpGet]
         public async Task<IActionResult> BookingSummary(int bookingId)
@@ -454,8 +492,6 @@ namespace WanderVibe.Controllers.Client
             // Redirect to the confirmation page or home page
             return RedirectToAction("Index", "Home");
         }
-
-
     }
 }
 

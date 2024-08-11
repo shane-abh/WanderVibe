@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using WanderVibe;
 using WanderVibe.Models;
 using WanderVibe.Data;
+using WanderVibe.Services;
 using Microsoft.Extensions.FileProviders;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -22,6 +23,8 @@ builder.Services.AddDefaultIdentity<UserProfile>(options => options.SignIn.Requi
 
 // Other services
 builder.Services.AddRazorPages();
+builder.Services.AddMemoryCache(); // Required for caching
+builder.Services.AddSingleton<ImageService>();
 
 var app = builder.Build();
 

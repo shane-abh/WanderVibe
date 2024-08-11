@@ -14,7 +14,7 @@
         @using (Html.BeginForm("Packages", "Home", FormMethod.Get, new { id = "filterForm" }))
         {
             <div class="row justify-content-center mb-4">
-                <div class="col-md-4 animate__animated animate__fadeInLeft animate__delay-1s">
+                <div class="col-md-4 animate__animated animate__fadeInLeft animate__delay-0.5s">
                     <div class="form-group">
                         <label for="selectedFrom" class="form-label">From</label>
                         @Html.DropDownListFor(model => model.SelectedFrom,
@@ -23,7 +23,7 @@
                                  new { @class = "form-select" })
                     </div>
                 </div>
-                <div class="col-md-4 animate__animated animate__fadeInLeft animate__delay-1s">
+                <div class="col-md-4 animate__animated animate__fadeInLeft animate__delay-0.5s">
                     <div class="form-group">
                         <label for="selectedTo" class="form-label">To</label>
                         @Html.DropDownListFor(model => model.SelectedTo,
@@ -32,7 +32,7 @@
                                  new { @class = "form-select" })
                     </div>
                 </div>
-                <div class="col-md-4 animate__animated animate__fadeInLeft animate__delay-1s">
+                <div class="col-md-4 animate__animated animate__fadeInLeft animate__delay-0.5s">
                     <div class="form-group">
                         <label for="selectedDate" class="form-label">Pick Date</label>
                         @Html.TextBoxFor(model => model.SelectedDate, "{0:yyyy-MM-dd}", new { @class = "form-control", @type = "date" })
@@ -40,7 +40,7 @@
                 </div>
             </div>
             <div class="row justify-content-center mb-4">                
-                <div class="col-md-6 d-flex justify-content-center gap-2 animate__animated animate__fadeInRight animate__delay-1s">
+                <div class="col-md-6 d-flex justify-content-center gap-2 animate__animated animate__fadeInRight animate__delay-0.5s">
                     <button type="submit" class="btn btn-primary">Filter</button>
                     <a asp-action="Packages" class="btn btn-secondary">Clear</a>
                 </div>
@@ -68,7 +68,7 @@
             {
                 <div class="col-md-4 mb-4">
                     <a asp-action="PackageDetail" asp-route-id="@package?.PackageId" class="card-link">
-                        <div class="card package-card h-100 animate__animated animate__zoomIn animate__delay-1s">
+                        <div class="card package-card h-100 animate__animated animate__zoomIn animate__delay-0.5s">
                             <img src="~/Server/Upload/@package.ImageUrl" class="card-img-top" alt="Tour Image">
                             <div class="card-header d-flex justify-content-between align-items-center">
                                 <span><i class="bi bi-clock"></i>@package.NoOfDays Days</span>

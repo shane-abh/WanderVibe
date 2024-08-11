@@ -22,6 +22,8 @@ namespace WanderVibe.Models
         [StringLength(200)]
         public string Destination { get; set; } = string.Empty;
 
+        public string ImageUrl { get; set; } = string.Empty;
+
         // Navigation property for the many-to-many relationship
         public ICollection<BookingService> BookingServices { get; set; } = new List<BookingService>();
     }
