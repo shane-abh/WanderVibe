@@ -4,10 +4,10 @@
     ViewData["Title"] = $"Booking Summary of {Model.Package.PackageName}";
 }
 
-<div class="container mt-5">
+<div class="container booking-summary">
     <!-- Main Heading -->
     <div class="text-center mb-4">
-        <h1>Booking Summary Of @Model.Package.PackageName</h1>
+        <h1 class="display-4 font-weight-bold">Booking Summary Of @Model.Package.PackageName</h1>
     </div>
 
     <!-- Booking Information -->
@@ -21,7 +21,7 @@
     </div>
 
     <!-- Booking Summary Table -->
-    <div class="card">
+    <div class="card shadow-sm">
         <div class="card-body">
             <form asp-action="BookingSummary" asp-controller="Booking" method="post">
                 @* Hidden fields to pass the bookingId and view model data *@
@@ -85,9 +85,55 @@
 
                 <!-- Book Now Button -->
                 <div class="d-flex justify-content-end mt-3">
-                    <button type="submit" class="btn btn-primary">Book Now</button>
+                    <button type="submit" class="btn btn-primary btn-md">Book Now</button>
                 </div>
             </form>
         </div>
     </div>
 </div>
+
+<style>
+    .booking-summary {
+        margin-top: 5rem;
+        margin-bottom: 4rem;
+        background-color: #f8f9fa;
+        padding: 20px;
+        border-radius: 8px;
+    }
+
+        .booking-summary .card {
+            border: none;
+            border-radius: 8px;
+        }
+
+        .booking-summary h1.display-4 {
+            font-size: 2.5rem;
+            color: #343a40;
+        }
+
+        .booking-summary .table-hover tbody tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        .booking-summary .table-primary {
+            background-color: #e9ecef;
+        }
+
+        .booking-summary .btn {
+            border-radius: .3rem;
+        }
+
+        .booking-summary th, .booking-summary td {
+            vertical-align: middle;
+        }
+
+        .booking-summary .table-light th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+        }
+
+        .booking-summary h5 {
+            font-weight: 500;
+        }
+</style>
+

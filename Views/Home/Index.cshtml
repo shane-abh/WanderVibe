@@ -24,6 +24,16 @@
     </div>
 </div>
 
+<div class="text-center mt-3 mx-auto" style="max-width:1200px">
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+</div>
+
 <!-- Popular Tour Packages Section -->
 <div class="container my-5" id="popular-packages">
     <h2 class="text-center mb-5 fw-bold">Our Popular Packages</h2>

@@ -51,15 +51,6 @@
 
 <!-- Available Packages Section -->
 <div class="container my-5">
-    <div class="text-center">
-        @if (TempData["Success"] != null)
-        {
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                @TempData["Success"]
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        }
-    </div>
     <h2 class="text-center mb-5 fw-bold">Our Packages</h2>
     <div class="row">
         @if (Model.Packages != null && Model.Packages.Any())

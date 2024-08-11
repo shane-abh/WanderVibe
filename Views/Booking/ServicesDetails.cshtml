@@ -4,7 +4,7 @@
     ViewData["Title"] = $"Booking for {Model.Package.PackageName}";
 }
 
-<div class="container mt-5">
+<div class="container my-5 checkout-services">
     <!-- Alert box section to display the success message -->
     <div class="text-center">
         @if (TempData["Error"] != null)
@@ -15,15 +15,16 @@
             </div>
         }
     </div>
+
     <!-- Main Heading -->
     <div class="text-center mb-4">
-        <h1>Booking For @Model?.Package?.PackageName</h1>
+        <h1 class="display-4 font-weight-bold">Booking For @Model?.Package?.PackageName</h1>
     </div>
 
     <!-- Heading and Back to Home Button -->
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2>Add Hotel and Flight for the Trip</h2>
-        <a href="@Url.Action("BackToHome", "Booking", new { packageId = Model?.Package?.PackageId })" class="btn btn-secondary">Back to Home</a>
+        <h2 class="font-weight-light">Add Hotel and Flight for the Trip</h2>
+        <a href="@Url.Action("BackToHome", "Booking", new { packageId = Model?.Package?.PackageId })" class="btn btn-outline-secondary">Back to Home</a>
     </div>
 
     <form asp-action="ServicesDetails" method="post">
@@ -34,9 +35,9 @@
         <input type="hidden" value="@Model?.SelectedFlightId" />
 
         <!-- Hotel Selection -->
-        <div class="card mb-4">
+        <div class="card mb-4 shadow-sm">
             <div class="card-body">
-                <h5 class="card-title">Select Hotel in @Model?.Package?.DestinationTo</h5>
+                <h5 class="card-title text-primary">Select Hotel in @Model?.Package?.DestinationTo</h5>
                 <div class="form-group row">
                     <div class="col-md-10">
                         <select class="form-select" asp-for="SelectedHotelId" asp-items="@(new SelectList(Model?.Hotels, "HotelId", "HotelName", Model?.SelectedHotelId))">
@@ -44,7 +45,7 @@
                         </select>
                     </div>
                     <div class="col-md-2 d-flex justify-content-center align-items-center">
-                        <button type="submit" name="action" value="GetHotelDetails" class="btn btn-primary d-flex align-items-center">Get Hotel Details</button>
+                        <button type="submit" name="action" value="GetHotelDetails" class="btn btn-primary">Get Hotel Details</button>
                     </div>
                 </div>
                 @if (Model?.SelectedHotel != null)
@@ -75,9 +76,9 @@
         </div>
 
         <!-- Flight Selection -->
-        <div class="card mb-4">
+        <div class="card mb-4 shadow-sm">
             <div class="card-body">
-                <h5 class="card-title">Select Flight from @Model?.Package?.DestinationFrom to @Model?.Package?.DestinationTo</h5>
+                <h5 class="card-title text-primary">Select Flight from @Model?.Package?.DestinationFrom to @Model?.Package?.DestinationTo</h5>
                 <div class="form-group row">
                     <div class="col-md-10">
                         <select class="form-select" asp-for="SelectedFlightId" asp-items="@(new SelectList(Model?.Flights, "FlightId", "FlightNumber", Model?.SelectedFlightId))">
@@ -111,8 +112,47 @@
 
         <!-- Buttons -->
         <div class="d-flex justify-content-between">
-            <button type="submit" name="action" value="Reset" class="btn btn-secondary">Reset</button>
+            <button type="submit" name="action" value="Reset" class="btn btn-outline-secondary">Reset</button>
             <button type="submit" name="action" value="Next" class="btn btn-primary">Next</button>
         </div>
     </form>
 </div>
+
+<style>
+    .checkout-services {
+        background-color: #f8f9fa;
+        padding: 20px;
+        border-radius: 8px;
+    }
+
+        .checkout-services .card {
+            border: none;
+            border-radius: 8px;
+        }
+
+        .checkout-services .card-title {
+            margin-bottom: 1rem;
+        }
+
+        .checkout-services .btn {
+            border-radius: .3rem;
+        }
+
+        .checkout-services h1.display-4 {
+            font-size: 2.5rem;
+            color: #343a40;
+        }
+
+        .checkout-services h2 {
+            font-size: 1.75rem;
+        }
+
+        .checkout-services .form-label {
+            font-weight: 500;
+        }
+
+        .checkout-services input[readonly] {
+            background-color: #e9ecef;
+            cursor: not-allowed;
+        }
+</style>
