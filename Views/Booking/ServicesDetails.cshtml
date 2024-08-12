@@ -4,7 +4,7 @@
     ViewData["Title"] = $"Booking for {Model.Package.PackageName}";
 }
 
-<div class="container mt-5">
+<div class="container my-5 checkout-services">
     <!-- Alert box section to display the success message -->
     <div class="text-center">
         @if (TempData["Error"] != null)
@@ -15,15 +15,15 @@
             </div>
         }
     </div>
+
     <!-- Main Heading -->
     <div class="text-center mb-4">
-        <h1>Booking For @Model?.Package?.PackageName</h1>
+        <h1 class="display-4 font-weight-bold">Booking For @Model?.Package?.PackageName</h1>
     </div>
 
     <!-- Heading and Back to Home Button -->
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2>Add Hotel and Flight for the Trip</h2>
-        <a href="@Url.Action("BackToHome", "Booking", new { packageId = Model?.Package?.PackageId })" class="btn btn-secondary">Back to Home</a>
+        <h2 class="font-weight-light">Add Hotel and Flight for the Trip</h2>       
     </div>
 
     <form asp-action="ServicesDetails" method="post">
@@ -34,7 +34,7 @@
         <input type="hidden" value="@Model?.SelectedFlightId" />
 
         <!-- Hotel Selection -->
-        <div class="card mb-4">
+        <div class="card mb-4 shadow-sm">
             <div class="card-body">
                 <h5 class="card-title">Select Hotel in @Model?.Package?.DestinationTo</h5>
                 <div class="form-group row">
@@ -44,7 +44,7 @@
                         </select>
                     </div>
                     <div class="col-md-2 d-flex justify-content-center align-items-center">
-                        <button type="submit" name="action" value="GetHotelDetails" class="btn btn-primary d-flex align-items-center">Get Hotel Details</button>
+                        <button type="submit" name="action" value="GetHotelDetails" class="btn custom-small-btn">Get Details</button>
                     </div>
                 </div>
                 @if (Model?.SelectedHotel != null)
@@ -75,7 +75,7 @@
         </div>
 
         <!-- Flight Selection -->
-        <div class="card mb-4">
+        <div class="card mb-4 shadow-sm">
             <div class="card-body">
                 <h5 class="card-title">Select Flight from @Model?.Package?.DestinationFrom to @Model?.Package?.DestinationTo</h5>
                 <div class="form-group row">
@@ -85,7 +85,7 @@
                         </select>
                     </div>
                     <div class="col-md-2 d-flex justify-content-center align-items-center">
-                        <button type="submit" name="action" value="GetFlightDetails" class="btn btn-primary">Get Flight Details</button>
+                        <button type="submit" name="action" value="GetFlightDetails" class="btn custom-small-btn">Get Details</button>
                     </div>
                 </div>
                 @if (Model?.SelectedFlight != null)
@@ -105,14 +105,18 @@
 
         <!-- Quantity Field -->
         <div class="form-group mb-4">
-            <label for="quantity">Quantity</label>
+            <label for="quantity" class="mb-2 fw-bold">Quantity</label>
             <input type="number" class="form-control" id="quantity" name="Quantity" value="@Model?.Quantity">
         </div>
 
         <!-- Buttons -->
         <div class="d-flex justify-content-between">
-            <button type="submit" name="action" value="Reset" class="btn btn-secondary">Reset</button>
-            <button type="submit" name="action" value="Next" class="btn btn-primary">Next</button>
+            <button type="submit" name="action" value="Reset" class="btn btn-secondary custom-small-clear-btn">Reset</button>
+
+            <div>
+                <a href="@Url.Action("BackToHome", "Booking", new { packageId = Model?.Package?.PackageId })" class="btn custom-small-clear-btn">Back to Home</a>
+                <button type="submit" name="action" value="Next" class="btn custom-small-btn">Next</button>
+            </div>
         </div>
     </form>
 </div>

@@ -35,14 +35,33 @@ body {
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.6);
 }
 
-.header-section .btn {
-  border: none;
-  color: white;
-  transition: background-color 0.3s ease;
+.custom-btn {
+  padding: 13px 36px;
+  border-radius: 50px;
+  cursor: pointer;
+  border: 0;
+  background-color: white;
+  box-shadow: rgb(0 0 0 / 5%) 0 0 8px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  font-size: 15px;
+  transition: all 0.5s ease;
 }
 
-.header-section .btn:hover {
-  color: white;
+.custom-btn:hover {
+  letter-spacing: 3px;
+  background-color: hsl(261deg 80% 48%);
+  color: hsl(0, 0%, 100%);
+  box-shadow: rgb(93 24 220) 0px 7px 29px 0px;
+}
+
+.custom-btn:active {
+  letter-spacing: 3px;
+  background-color: hsl(261deg 80% 48%);
+  color: hsl(0, 0%, 100%);
+  box-shadow: rgb(93 24 220) 0px 0px 0px 0px;
+  transform: translateY(10px);
+  transition: 100ms;
 }
 
 .container {
@@ -61,24 +80,37 @@ body {
 /* Packages page style START*/
 
 /* Packages - Form styling */
-#filterForm .btn-primary {
-  background-color: #007bff;
-  border-color: #007bff;
+#filterForm .custom-btn {
+  padding: 0px 19px;
+  border-radius: 7px;
+  cursor: pointer;
+  border: 0;
+  background-color: hsl(261deg 80% 48%);
+  color: #ffffff;
+  box-shadow: rgb(0 0 0 / 5%) 0 0 8px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  font-size: 15px;
+  transition: all 0.5s ease;
 }
 
-#filterForm .btn-primary:hover {
-  background-color: #0056b3;
-  border-color: #0056b3;
+#filterForm .custom-btn:hover {
+  letter-spacing: 3px;
+  background-color: hsl(261deg 80% 48%);
+  color: hsl(0, 0%, 100%);
 }
 
 #filterForm .btn-secondary {
   background-color: #6c757d;
   border-color: #6c757d;
+  transition: all 0.5s ease;
+  text-transform: uppercase;
 }
 
 #filterForm .btn-secondary:hover {
   background-color: #5a6268;
   border-color: #545b62;
+  letter-spacing: 3px;
 }
 
 /* Packages - Card styling */
@@ -147,19 +179,49 @@ body {
 
 .package-card .card-footer {
   background-color: white;
-  padding: 10px;
+  padding: 16px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   font-size: 1rem;
 }
 
-.package-card .card-footer .btn {
-  border: none;
-  color: white;
-  padding: 5px 10px;
-  font-size: 0.875rem;
-  border-radius: 5px;
+.custom-small-btn {
+  padding: 6px 15px;
+  border-radius: 10px;
+  cursor: pointer;
+  border: 0;
+  background-color: hsl(261deg 80% 48%);
+  color: #ffffff;
+  box-shadow: rgb(0 0 0 / 5%) 0 0 8px;
+  letter-spacing: 1px;
+  font-size: 15px;
+  transition: all 0.5s ease;
+}
+
+.custom-small-btn:hover {
+  letter-spacing: 3px;
+  background-color: hsl(261deg 80% 48%);
+  color: hsl(0, 0%, 100%);
+  box-shadow: rgb(93 24 220) 0px 7px 29px 0px;
+}
+
+.custom-small-clear-btn {
+  padding: 6px 15px;
+  border-radius: 10px;
+  cursor: pointer;
+  border: 0;
+  box-shadow: rgb(0 0 0 / 5%) 0 0 8px;
+  letter-spacing: 1px;
+  font-size: 15px;
+  transition: all 0.5s ease;
+}
+
+.custom-small-clear-btn:hover {
+  letter-spacing: 3px;
+  background-color: hsl(261deg 80% 48%);
+  color: hsl(0, 0%, 100%);
+  box-shadow: rgb(93 24 220) 0px 7px 29px 0px;
 }
 
 .package-card .card-footer strong {
@@ -544,7 +606,6 @@ body {
 
 .extra-services-header h1 {
   font-size: 2.5rem;
-  color: #007bff;
   margin-bottom: 20px;
 }
 
@@ -589,7 +650,7 @@ body {
   font-size: 1.25rem;
   margin-bottom: 0.5rem;
   font-weight: bold;
-  color: #007bff;
+  color: hsl(261deg 80% 48%);
 }
 
 .service-card-price {
@@ -601,7 +662,7 @@ body {
 .service-checkbox {
   width: 20px;
   height: 20px;
-  accent-color: #007bff;
+  accent-color: hsl(261deg 80% 48%);
   position: absolute;
   top: 3%;
   right: 3%;
@@ -621,4 +682,66 @@ body {
 .confirm-button:hover {
   background-color: #0056b3;
   border-color: #0056b3;
+}
+
+/* Booking/packageDetails style */
+/* Booking/ServicesDetails */
+.checkout-page,
+.checkout-services {
+  background-color: #f8f9fa;
+  padding: 45px;
+  border-radius: 8px;
+}
+
+.checkout-page .card,
+.checkout-services .card {
+  border: none;
+  border-radius: 8px;
+}
+
+.checkout-page .card-title,
+.checkout-services .card-title {
+  margin-bottom: 1rem;
+}
+
+.custom-confirm-btn {
+  padding: 10px 36px;
+  border-radius: 7px;
+  cursor: pointer;
+  border: 0;
+  background-color: hsl(261deg 80% 48%);
+  color: white;
+  box-shadow: rgb(0 0 0 / 5%) 0 0 8px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  font-size: 15px;
+  transition: all 0.5s ease;
+}
+
+.custom-confirm-btn:hover {
+  letter-spacing: 3px;
+  background-color: hsl(261deg 80% 48%);
+  color: hsl(0, 0%, 100%);
+}
+
+.checkout-page h1.display-4,
+.checkout-services h1.display-4 {
+  font-size: 2.5rem;
+  color: #343a40;
+}
+
+.checkout-page h2,
+.checkout-services h2 {
+  font-size: 1.75rem;
+}
+
+.checkout-page .form-label,
+.checkout-services .form-label {
+  font-weight: 500;
+}
+
+.checkout-page input[readonly],
+.checkout-services input[readonly] {
+  background-color: #ffffff;
+  cursor: not-allowed;
 }
