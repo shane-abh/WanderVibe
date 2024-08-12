@@ -4,7 +4,7 @@
     ViewData["Title"] = "Basic Details";
 }
 
-<div class="container mt-5 checkout-page">
+<div class="container my-5 checkout-page">
     <!-- Main Heading -->
     <div class="text-center mb-4">
         <h1 class="display-4 font-weight-bold">Booking for @Model?.Package?.PackageName</h1>
@@ -12,8 +12,7 @@
 
     <!-- Heading and Back to Home Button -->
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="font-weight-light">Basic Details</h2>
-        <a href="@Url.Action("BackToHome", "Booking", new { packageId = Model?.Package?.PackageId })" class="btn btn-outline-secondary">Back to Home</a>
+        <h2 class="font-weight-light">Basic Details</h2>        
     </div>
 
     <!-- Personal Information and Package Information Form -->
@@ -23,7 +22,7 @@
         <!-- Personal Information -->
         <div class="card mb-4 shadow-sm">
             <div class="card-body">
-                <h5 class="card-title text-primary">Personal Information</h5>
+                <h5 class="card-title">Personal Information</h5>
                 <div class="row">
                     <div class="col-md-6 mb-3">
                         <label for="firstName" class="form-label">First Name</label>
@@ -50,7 +49,7 @@
         <!-- Package Information -->
         <div class="card mb-4 shadow-sm">
             <div class="card-body">
-                <h5 class="card-title text-primary">Package Details</h5>
+                <h5 class="card-title">Package Details</h5>
                 <div class="row">
                     <div class="col-md-6 mb-3">
                         <label for="packageName" class="form-label">Package Name</label>
@@ -75,47 +74,9 @@
         </div>
 
         <!-- Buttons -->
-        <div class="d-flex justify-content-end">
-            <button type="submit" class="btn btn-primary btn-md">Next</button>
+        <div class="d-flex justify-content-end gap-3">
+            <a href="@Url.Action("BackToHome", "Booking", new { packageId = Model?.Package?.PackageId })" class="btn custom-small-clear-btn">Back to Home</a>
+            <button type="submit" class="btn custom-small-btn">Next</button>
         </div>
     </form>
 </div>
-
-<style>
-    .checkout-page {
-        background-color: #f8f9fa;
-        padding: 20px;
-        border-radius: 8px;
-    }
-
-        .checkout-page .card {
-            border: none;
-            border-radius: 8px;
-        }
-
-        .checkout-page .card-title {
-            margin-bottom: 1rem;
-        }
-
-        .checkout-page .btn {
-            border-radius: .3rem;
-        }
-
-        .checkout-page h1.display-4 {
-            font-size: 2.5rem;
-            color: #343a40;
-        }
-
-        .checkout-page h2 {
-            font-size: 1.75rem;
-        }
-
-        .checkout-page .form-label {
-            font-weight: 500;
-        }
-
-        .checkout-page input[readonly] {
-            background-color: #e9ecef;
-            cursor: not-allowed;
-        }
-</style>

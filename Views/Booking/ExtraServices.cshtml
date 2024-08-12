@@ -18,7 +18,7 @@
         <input type="hidden" name="bookingId" value="@ViewBag.BookingId" />
 
         <!-- Services Selection -->
-        <div class="row">
+        <div class="row my-3">
             @foreach (var service in Model.Services)
             {
                 var isChecked = Model.SelectedServiceIds.Contains(service.ServiceId) ? "checked" : "";
@@ -39,7 +39,7 @@
 
         <!-- Confirm Button -->
         <div class="d-flex justify-content-end">
-            <button type="submit" class="btn btn-primary confirm-button">Confirm Booking</button>
+            <button type="submit" class="btn custom-confirm-btn">Confirm</button>
         </div>
     </form>
 </div>
