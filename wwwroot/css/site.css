@@ -26,7 +26,7 @@
 }
 
 .navbar-nav .nav-link:hover {
-  color: #ffc107;
+  color: hsl(261deg 80% 48%);
   text-shadow: 0px 0px 5px rgba(255, 255, 255, 0.5);
 }
 
@@ -61,7 +61,7 @@
 }
 
 .footer a {
-  color: #ffc107;
+  color: white;
   text-decoration: none;
 }
 
