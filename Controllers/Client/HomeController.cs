@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
+using System.Security.Claims;
 using WanderVibe.Models;
 
 namespace WanderVibe.Controllers.Client
@@ -7,6 +9,23 @@ namespace WanderVibe.Controllers.Client
     public class HomeController : Controller
     {
         private readonly TravelDbContext _context;
+
+        private static string GetBookingStatus(DateTime startDate, DateTime endDate)
+        {
+            DateTime currentDate = DateTime.Now;
+            if (currentDate < startDate)
+            {
+                return "Scheduled";
+            }
+            else if (currentDate >= startDate && currentDate <= endDate)
+            {
+                return "On Going";
+            }
+            else
+            {
+                return "Completed";
+            }
+        }
 
         public HomeController(TravelDbContext context)
         {
@@ -30,6 +49,58 @@ namespace WanderVibe.Controllers.Client
         public IActionResult Contact()
         {
             return View();
+        }
+
+        [HttpGet]
+        public IActionResult Booking(int pageNumber = 1, int pageSize = 5)
+        {
+            // Get the logged-in user's ID
+            string userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            // Retrieve the bookings for the logged-in user
+            var bookingsQuery = _context.Bookings
+                .Where(b => b.UserId == userId)
+                .Include(b => b.TravelPackage)
+                .Include(b => b.Hotel)
+                .Include(b => b.Flight)
+                .Include(b => b.BookingServices)
+                    .ThenInclude(bs => bs.Service)
+                .OrderByDescending(b => b.TravelPackage.StartDate);
+
+            // Calculate total bookings and pages
+            int totalBookings = bookingsQuery.Count();
+            int totalPages = (int)Math.Ceiling(totalBookings / (double)pageSize);
+
+            // Fetch the bookings for the current page
+            var bookings = bookingsQuery
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
+            // Process the results
+            var bookingViewModels = bookings.Select(b => new UserBookingViewModel
+            {
+                PackageName = b.TravelPackage.PackageName,
+                From = b.TravelPackage.DestinationFrom,
+                To = b.TravelPackage.DestinationTo,
+                StartDate = b.TravelPackage.StartDate,
+                EndDate = b.TravelPackage.EndDate,
+                HotelName = b.Hotel.HotelName,
+                HotelEmail = b.Hotel.Email,
+                HotelPhoneNumber = b.Hotel.Contact,
+                FlightNumber = b.Flight.FlightNumber,
+                Services = b.BookingServices.Select(bs => bs.Service.Name).ToList(),
+                Status = GetBookingStatus(b.TravelPackage.StartDate, b.TravelPackage.EndDate)
+            }).ToList();
+
+            var viewModel = new PaginatedUserBookingViewModel
+            {
+                Bookings = bookingViewModels,
+                PageNumber = pageNumber,
+                TotalPages = totalPages
+            };
+
+            return View(viewModel);
         }
 
         [HttpGet]

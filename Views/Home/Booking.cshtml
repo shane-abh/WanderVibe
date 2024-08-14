@@ -1,0 +1,101 @@
+﻿@model PaginatedUserBookingViewModel
+@{
+    ViewData["Title"] = "Booking History";
+}
+
+<div class="container booking-history">
+    @if (!Model.Bookings.Any())
+    {
+        <div class="d-flex flex-column justify-content-center align-items-center" style="min-height: 361px;">
+            <h2>No Booking History</h2>
+        </div>
+    }
+    else
+    {
+        <h2 class="mb-5">Booking History</h2>
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Package Name</th>
+                        <th>Start Date</th>
+                        <th>End Date</th>
+                        <th>Accommodation</th>
+                        <th>Flight Number</th>
+                        <th>Things To Do</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var booking in Model.Bookings)
+                    {
+                        <tr>
+                            <td>@booking.PackageName</td>
+                            <td>@booking.StartDate?.ToString("dd-MM-yyyy")</td>
+                            <td>@booking.EndDate?.ToString("dd-MM-yyyy")</td>
+                            <td>
+                                <strong>@booking.HotelName</strong><br />
+                                Phone: @booking.HotelPhoneNumber<br />
+                                Email: <a href="mailto:@booking.HotelEmail">@booking.HotelEmail</a>
+                            </td>
+                            <td>@booking.FlightNumber</td>
+                            <td>
+                                @foreach (var service in booking.Services)
+                                {
+                                    <span>@service</span>
+                                    <br />
+                                }
+                            </td>
+                            <td class="text-center align-middle">
+                                <span class="badge @booking.StatusBadgeClass badge-style">
+                                    @booking.Status
+                                </span>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <nav aria-label="Page navigation example">
+            <ul class="pagination justify-content-center">
+                @if (Model.HasPreviousPage)
+                {
+                    <li class="page-item">
+                        <a class="page-link" href="@Url.Action("Booking", new { pageNumber = Model.PageNumber - 1 })" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                }
+                else
+                {
+                    <li class="page-item disabled">
+                        <span class="page-link">&laquo;</span>
+                    </li>
+                }
+
+                @for (int i = 1; i <= Model.TotalPages; i++)
+                {
+                    <li class="page-item @(i == Model.PageNumber ? "active" : "")">
+                        <a class="page-link" href="@Url.Action("Booking", new { pageNumber = i })">@i</a>
+                    </li>
+                }
+
+                @if (Model.HasNextPage)
+                {
+                    <li class="page-item">
+                        <a class="page-link" href="@Url.Action("Booking", new { pageNumber = Model.PageNumber + 1 })" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                }
+                else
+                {
+                    <li class="page-item disabled">
+                        <span class="page-link">&raquo;</span>
+                    </li>
+                }
+            </ul>
+        </nav>
+    }
+</div>

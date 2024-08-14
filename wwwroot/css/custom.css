@@ -41,7 +41,6 @@ body {
   cursor: pointer;
   border: 0;
   background-color: white;
-  box-shadow: rgb(0 0 0 / 5%) 0 0 8px;
   letter-spacing: 1.5px;
   text-transform: uppercase;
   font-size: 15px;
@@ -52,14 +51,12 @@ body {
   letter-spacing: 3px;
   background-color: hsl(261deg 80% 48%);
   color: hsl(0, 0%, 100%);
-  box-shadow: rgb(93 24 220) 0px 7px 29px 0px;
 }
 
 .custom-btn:active {
   letter-spacing: 3px;
   background-color: hsl(261deg 80% 48%);
   color: hsl(0, 0%, 100%);
-  box-shadow: rgb(93 24 220) 0px 0px 0px 0px;
   transform: translateY(10px);
   transition: 100ms;
 }
@@ -193,7 +190,6 @@ body {
   border: 0;
   background-color: hsl(261deg 80% 48%);
   color: #ffffff;
-  box-shadow: rgb(0 0 0 / 5%) 0 0 8px;
   letter-spacing: 1px;
   font-size: 15px;
   transition: all 0.5s ease;
@@ -203,7 +199,6 @@ body {
   letter-spacing: 3px;
   background-color: hsl(261deg 80% 48%);
   color: hsl(0, 0%, 100%);
-  box-shadow: rgb(93 24 220) 0px 7px 29px 0px;
 }
 
 .custom-small-clear-btn {
@@ -745,3 +740,22 @@ body {
   background-color: #ffffff;
   cursor: not-allowed;
 }
+
+/*Booking History*/
+
+.booking-history{
+    margin-top: 7rem;
+    margin-bottom:16rem;
+}
+
+.badge-style {
+    padding: 6px 15px;
+    border-radius: 10px;
+    border: 0;
+    letter-spacing: 1px;
+    font-size: 15px;
+}
+
+
+
+
