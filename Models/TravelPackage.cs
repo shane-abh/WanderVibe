@@ -17,7 +17,7 @@ namespace WanderVibe.Models
         public string? Description { get; set; }
 
         [Required]
-        [Range(0, double.MaxValue)]
+        [Range(0, double.MaxValue, ErrorMessage = "Price must be a non-negative value.")]
         [Column(TypeName = "decimal(18,2)")]
         public decimal Price { get; set; }
 
@@ -46,7 +46,7 @@ namespace WanderVibe.Models
             }
         }
 
-        [Range(0, int.MaxValue)]
+        [Range(0, int.MaxValue, ErrorMessage = "Availability must be a non-negative number.")]
         public int Availability { get; set; }
 
         [StringLength(500)]

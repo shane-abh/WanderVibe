@@ -27,11 +27,11 @@ namespace WanderVibe.Models
         public DateTime ArrivalDate { get; set; }
 
         [Required]
-        [Range(0, double.MaxValue)]
+        [Range(0, double.MaxValue, ErrorMessage = "Price must be a non-negative value.")]
         [Column(TypeName = "decimal(18,2)")]
         public decimal Price { get; set; }
 
-        [Range(0, int.MaxValue)]
+        [Range(0, int.MaxValue, ErrorMessage = "Availability must be a non-negative number.")]
         public int Availability { get; set; }
 
         public ICollection<Booking>? Bookings { get; set; }

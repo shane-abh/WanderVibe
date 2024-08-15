@@ -16,11 +16,11 @@ namespace WanderVibe.Models
         public string? Location { get; set; }
 
         [Required]
-        [Range(0, double.MaxValue)]
+        [Range(0, double.MaxValue, ErrorMessage = "Price per night must be a non-negative value.")]
         [Column(TypeName = "decimal(18,2)")]
         public decimal? PricePerNight { get; set; }
 
-        [Range(0, int.MaxValue)]
+        [Range(0, double.MaxValue, ErrorMessage = "Availability must be a non-negative value.")]
         public int Availability { get; set; }
 
         [Required]

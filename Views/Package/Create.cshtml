@@ -71,13 +71,15 @@
                     <input asp-for="Price" class="form-control" id="floatingPrice" type="number" step="0.01" placeholder="Price" spellcheck="true" required>
                     <label for="floatingPrice">Price</label>
                     <div class="invalid-feedback">Please provide a price.</div>
+                    <span asp-validation-for="Price" class="text-danger"></span>
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="form-floating mb-3">
                     <input asp-for="Availability" class="form-control" id="floatingAvailability" type="number" placeholder="Availability" spellcheck="true" required>
                     <label for="floatingAvailability">Availability</label>
-                    <div class="invalid-feedback">Please provide the availability.</div>                   
+                    <div class="invalid-feedback">Please provide the availability.</div>
+                    <span asp-validation-for="Availability" class="text-danger"></span>
                 </div>
             </div>
             <div class="col-md-12">
