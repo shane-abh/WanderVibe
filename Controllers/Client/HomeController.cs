@@ -15,7 +15,7 @@ namespace WanderVibe.Controllers.Client
             DateTime currentDate = DateTime.Now;
             if (currentDate < startDate)
             {
-                return "Scheduled";
+                return "Booked";
             }
             else if (currentDate >= startDate && currentDate <= endDate)
             {
@@ -59,13 +59,13 @@ namespace WanderVibe.Controllers.Client
 
             // Retrieve the bookings for the logged-in user
             var bookingsQuery = _context.Bookings
-                .Where(b => b.UserId == userId)
+                .Where(b => b.UserId == userId && b.Status == "Confirmed")
                 .Include(b => b.TravelPackage)
                 .Include(b => b.Hotel)
                 .Include(b => b.Flight)
                 .Include(b => b.BookingServices)
                     .ThenInclude(bs => bs.Service)
-                .OrderByDescending(b => b.TravelPackage.StartDate);
+                .OrderByDescending(b => b.BookingDate);
 
             // Calculate total bookings and pages
             int totalBookings = bookingsQuery.Count();
