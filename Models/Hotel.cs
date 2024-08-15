@@ -26,6 +26,7 @@ namespace WanderVibe.Models
         [Required]
         [StringLength(17)]
         [Phone]
+        [RegularExpression(@"^(\+1\s\d{3}\s\d{3}\s\d{4}|\(\d{3}\)\s\d{3}\s\d{4}|\d{3}\s\d{3}\s\d{4})$", ErrorMessage = "Phone number format is not valid. Accepted formats: +1 123 123 1234, (123) 123 1234, 123 123 1234.")]
         public string? Contact { get; set; }
 
         [Required]
