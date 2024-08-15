@@ -20,7 +20,7 @@
                 return Status switch
                 {
                     "Completed" => "bg-success",
-                    "Scheduled" => "bg-primary",
+                    "Booked" => "bg-primary",
                     "On Going" => "bg-warning",
                     _ => "bg-secondary",
                 };
