@@ -121,12 +121,22 @@ namespace WanderVibe.Controllers.Admin
         public IActionResult Delete(int id)
         {
             var travelPackage = _context.TravelPackages.Find(id);
-            if (travelPackage != null)
+            if (travelPackage == null)
             {
-                _context.TravelPackages.Remove(travelPackage);
-                _context.SaveChanges();
-                TempData["SuccessMessage"] = $"Package '{travelPackage.PackageName}' deleted successfully!";
+                return NotFound();
             }
+
+            // Count the number of bookings associated with this package
+            var bookingCount = _context.Bookings.Count(b => b.PackageId == id);
+            if (bookingCount > 0)
+            {
+                TempData["ErrorMessage"] = $"Package '{travelPackage.PackageName}' cannot be deleted because it has {bookingCount} associated booking(s).";
+                return RedirectToAction(nameof(Index));
+            }
+
+            _context.TravelPackages.Remove(travelPackage);
+            _context.SaveChanges();
+            TempData["SuccessMessage"] = $"Package '{travelPackage.PackageName}' deleted successfully!";
             return RedirectToAction(nameof(Index));
         }
     }

@@ -78,12 +78,22 @@ namespace WanderVibe.Controllers.Admin
         public IActionResult Delete(int id)
         {
             var flight = _context.Flights.Find(id);
-            if (flight != null)
+            if (flight == null)
             {
-                _context.Flights.Remove(flight);
-                _context.SaveChanges();
-                TempData["SuccessMessage"] = $"Flight '{flight.FlightNumber}' deleted successfully!";
+                return NotFound();
             }
+
+            // Count the number of bookings associated with this flight
+            var bookingCount = _context.Bookings.Count(b => b.FlightId == id);
+            if (bookingCount > 0)
+            {
+                TempData["ErrorMessage"] = $"Flight '{flight.FlightNumber}' cannot be deleted because it has {bookingCount} associated booking(s).";
+                return RedirectToAction(nameof(Index));
+            }
+
+            _context.Flights.Remove(flight);
+            _context.SaveChanges();
+            TempData["SuccessMessage"] = $"Flight '{flight.FlightNumber}' deleted successfully!";
             return RedirectToAction(nameof(Index));
         }
     }

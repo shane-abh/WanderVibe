@@ -86,16 +86,23 @@ namespace WanderVibe.Controllers.Admin
         public IActionResult Delete(int id)
         {
             var service = _context.Services.Find(id);
-            if (service != null)
-            {
-                _context.Services.Remove(service);
-                _context.SaveChanges();
-                TempData["SuccessMessage"] = $"Service '{service.Name}' deleted successfully!";
-            }
-            else
+            if (service == null)
             {
                 TempData["ErrorMessage"] = "Service not found.";
+                return RedirectToAction(nameof(Index));
             }
+
+            // Count the number of bookings associated with this service
+            var bookingCount = _context.BookingServices.Count(bs => bs.ServiceId == id);
+            if (bookingCount > 0)
+            {
+                TempData["ErrorMessage"] = $"Service '{service.Name}' cannot be deleted because it is associated with {bookingCount} booking(s).";
+                return RedirectToAction(nameof(Index));
+            }
+
+            _context.Services.Remove(service);
+            _context.SaveChanges();
+            TempData["SuccessMessage"] = $"Service '{service.Name}' deleted successfully!";
             return RedirectToAction(nameof(Index));
         }
     }

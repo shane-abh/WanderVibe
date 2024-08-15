@@ -78,12 +78,22 @@ namespace WanderVibe.Controllers.Admin
         public IActionResult Delete(int id)
         {
             var hotel = _context.Hotels.Find(id);
-            if (hotel != null)
+            if (hotel == null)
             {
-                _context.Hotels.Remove(hotel);
-                _context.SaveChanges();
-                TempData["SuccessMessage"] = $"Hotel '{hotel.HotelName}' deleted successfully!";
+                return NotFound();
             }
+
+            // Count the number of bookings associated with this hotel
+            var bookingCount = _context.Bookings.Count(b => b.HotelId == id);
+            if (bookingCount > 0)
+            {
+                TempData["ErrorMessage"] = $"Hotel '{hotel.HotelName}' cannot be deleted because it has {bookingCount} associated booking(s).";
+                return RedirectToAction(nameof(Index));
+            }
+
+            _context.Hotels.Remove(hotel);
+            _context.SaveChanges();
+            TempData["SuccessMessage"] = $"Hotel '{hotel.HotelName}' deleted successfully!";
             return RedirectToAction(nameof(Index));
         }
     }
